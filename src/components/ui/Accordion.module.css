@@ -1,0 +1,48 @@
+.accordion {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.accordion:hover {
+  border-color: var(--border-active);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.06);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--bg-tertiary);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.header:hover {
+  background: var(--bg-elevated);
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.icon {
+  color: var(--text-secondary);
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.open .icon {
+  transform: rotate(0deg);
+}
+
+.content {
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-subtle);
+}

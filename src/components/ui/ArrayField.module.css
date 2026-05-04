@@ -1,0 +1,82 @@
+.arrayField {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.arrayField:hover {
+  border-color: var(--border-active);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.06);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background 0.15s ease;
+}
+
+.item:hover {
+  background: var(--bg-secondary);
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.itemInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 14px;
+  padding: 4px;
+  font-family: var(--font-sans);
+}
+
+.itemInput:focus {
+  outline: none;
+}
+
+.removeBtn {
+  padding: 4px 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.removeBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--error);
+}
+
+.addBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  background: var(--bg-tertiary);
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  width: 100%;
+  font-size: 13px;
+  font-family: var(--font-sans);
+  transition: all 0.15s ease;
+}
+
+.addBtn:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}

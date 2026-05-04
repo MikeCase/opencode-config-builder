@@ -47,19 +47,18 @@ A visual configuration editor for OpenCode AI coding agent. The app provides an 
 - Base unit: 4px
 - Spacing scale: 4, 8, 12, 16, 24, 32, 48, 64
 - Border radius: 6px (small), 8px (medium), 12px (large), 16px (cards)
-- Sidebar width: 240px (collapsed: 64px)
+- Sidebar width: 260px
 
 ### Motion Philosophy
 - **Navigation**: instant color transitions (150ms ease), smooth collapse/expand (250ms ease-out)
 - **Cards/panels**: subtle scale on hover (1.01), smooth shadow transitions
-- **Modals**: fade + scale from 0.95 (200ms ease-out)
 - **Inputs**: focus ring animation (150ms)
-- **Success feedback**: brief pulse on accent gradient
+- **Sidebar nav items**: hover glow effect, active state with accent border
 
 ### Visual Assets
 - **Icons**: Lucide React (consistent 20px stroke-width-1.5)
 - **Decorative**: Subtle gradient orbs in background (CSS radial gradients, low opacity)
-- **Empty states**: Minimal line illustrations (SVG)
+- **Badges**: NEW badge for Oh My OpenAgent nav item
 
 ---
 
@@ -69,44 +68,45 @@ A visual configuration editor for OpenCode AI coding agent. The app provides an 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  ┌──────────┐  ┌─────────────────────────────────────────┐   │
-│  │          │  │  Header: Section title + Actions       │   │
+│  │          │  │  Header: Logo + Import/Export/Reset      │   │
 │  │ Sidebar  │  ├─────────────────────────────────────────┤   │
 │  │          │  │                                         │   │
 │  │ - Logo   │  │  Content Area                           │   │
 │  │ - Nav    │  │  (Form fields, cards, config preview)   │   │
 │  │   items  │  │                                         │   │
 │  │          │  │                                         │   │
-│  │          │  │                                         │   │
-│  │ ───────  │  │                                         │   │
-│  │ Import   │  │                                         │   │
-│  │ Export   │  │                                         │   │
+│  │ [NEW]    │  │                                         │   │
+│  │ OhMy     │  │                                         │   │
 │  └──────────┘  └─────────────────────────────────────────┘   │
+│                                                     ┌──────┐ │
+│                                                     │JSON  │ │
+│                                                     │Prev  │ │
+│                                                     └──────┘ │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Sidebar Sections (icons + labels)
-1. **General** — model, provider, autoupdate, snapshot, share
-2. **Server** — port, hostname, CORS, mDNS
-3. **Agents** — custom agent configurations
-4. **Permissions** — tool permissions, granular rules
-5. **Tools** — enable/disable built-in tools
-6. **MCP Servers** — local and remote MCP configurations
-7. **Models** — provider model options and variants
-8. **Formatter** — code formatter configurations
-9. **Commands** — custom commands
-10. **Advanced** — compaction, watcher, plugins, instructions
+### Sidebar Sections
+1. **Core** - General, Server
+2. **Extensions** - Agents, Permissions, Tools, MCP Servers
+3. **Config** - Models, Formatters, Commands
+4. **Advanced** - Advanced (compaction, watcher, plugins, instructions)
+5. **Plugins** - Oh My OpenAgent (shown only when `oh-my-openagent` or `oh-my-opencode` in plugins list)
 
-### Content Area Pattern
-- Section header with description
-- Card-based grouping for related settings
-- Collapsible subsections within cards
-- Inline validation with error states
-- "Config Preview" toggle button (bottom-right floating)
+**Sidebar Features:**
+- Active state with accent left border and glow
+- Section labels (uppercase, letter-spaced)
+- NEW badge on Oh My OpenAgent item
+- Hover glow effects
 
-### Responsive Strategy
-- **Desktop (>1024px)**: Full sidebar + content
-- **Tablet (768-1024px)**: Collapsible sidebar overlay
-- **Mobile (<768px)**: Bottom tab bar, full-width content
+### Header Actions
+- **Import** - Load `.json` or `.jsonc` config file (merges with existing state)
+- **Export** - Download config as `config.jsonc` (excludes `oh_my_openagent`)
+- **Reset** - Reset all config to defaults (with confirmation)
+
+### Floating Preview
+- Fixed position bottom-right corner
+- Shows live JSONC output
+- Updates as config changes
 
 ---
 
@@ -115,55 +115,59 @@ A visual configuration editor for OpenCode AI coding agent. The app provides an 
 ### Core Features
 
 #### Config State Management
-- All form state stored in React context/Zustand
-- Real-time validation against JSON Schema
-- Undo/redo stack for changes (Ctrl+Z / Ctrl+Shift+Z)
+- Zustand store with `persist` middleware
+- localStorage key: `opencode-config`
+- Dot-path updates: `update('server.port', 4096)`
+- All form state stored globally
 
 #### Import Config
-- Click "Import" in sidebar footer
+- Click "Import" in header
 - File picker for `.json`, `.jsonc` files
-- Parse and validate, show errors if invalid
-- Merge with existing state (ask to replace or append)
+- Parse and validate with error message if invalid
+- Merge with existing state (updates existing keys)
 
 #### Export Config
-- Click "Export" in sidebar footer
-- Generate JSONC with comments (for `$schema` and key sections)
-- Download as `opencode.jsonc`
-- Copy to clipboard option
+- Click "Export" in header
+- Generate JSON with 2-space indentation
+- `oh_my_openagent` excluded (separate export)
+- Download as `config.jsonc`
 
-#### Config Preview Panel
-- Floating button bottom-right "Preview"
-- Slide-out panel showing live JSONC output
-- Syntax highlighted
-- Copy button
+#### Oh My OpenAgent Import/Export
+- Only visible when plugin detected in config
+- Separate buttons on the Oh My OpenAgent page
+- Separate file: `oh-my-openagent.jsonc`
+
+#### Reset Config
+- Click "Reset" in header
+- Confirmation prompt
+- Resets to hardcoded defaults (keeps localStorage empty)
 
 ### Interaction Details
 
 #### Navigation
 - Click sidebar item → instant content switch, URL updates
-- Active item has accent left border + bg highlight
-- Hover: subtle bg change (150ms)
+- Active item has accent left border + bg highlight + glow
+- Hover: subtle bg change + glow (150ms)
 
 #### Form Inputs
 - **Text/Number**: Standard input with label, placeholder, helper text
-- **Toggle**: Custom switch with accent color when on
-- **Select**: Custom dropdown with search for long lists (models, etc.)
-- **Array fields**: Add/remove buttons, drag to reorder (for MCP servers, agents)
-- **Object fields**: Expandable accordion
+- **Toggle**: Custom switch with accent color when on, stopPropagation prevents accordion collapse
+- **Select**: Custom dropdown with options prop, supports children for manual options
+- **ArrayField**: Add/remove items, safe handling of non-array values
+
+#### Expandable Cards
+- Click `+`/`−` toggle in card header to expand/collapse
+- Inner form elements have stopPropagation to prevent closing
+- Toggle, Input, Select, ArrayField, Button all prevent event bubbling
 
 #### Validation
-- Real-time JSON Schema validation
-- Inline error messages below fields
-- Section shows warning badge if has errors
-
-#### Empty States
-- First load: welcome message with quick-start suggestions
-- Empty arrays: "No items yet" with add button
+- No real-time schema validation (import shows alert on failure)
+- Config loaded via parseJsonc which strips comments and handles trailing commas
 
 ### Edge Cases
-- **Invalid JSON on import**: Show parse error, don't overwrite state
-- **Unknown config keys**: Preserve and display in "Unknown Keys" section
-- **Very long values**: Truncate in preview, full value in input
+- **Invalid JSON on import**: Show alert, don't overwrite state
+- **Non-array values in ArrayField**: Converts to empty array safely
+- **Toggle clicks in expanded cards**: Don't collapse card
 
 ---
 
@@ -172,95 +176,73 @@ A visual configuration editor for OpenCode AI coding agent. The app provides an 
 ### Layout Components
 
 #### `Sidebar`
-- **Default**: 240px width, bg-secondary, border-right
-- **Collapsed**: 64px width, icons only, tooltips on hover
-- **Nav items**: Icon + label, 44px height, rounded left corners
+- 260px width, bg-secondary, border-right
+- Section labels: uppercase, letter-spaced, tertiary color
+- Nav items: icon + label, hover glow, active accent border
+- NEW badge for Oh My OpenAgent
+- Uses `usePathname()` for active state
 
 #### `Header`
-- Section title (h1), description (muted)
-- Right side: action buttons (context-specific)
+- Logo left, action buttons right
+- Import, Export, Reset buttons
+- Uses generateJsonc with excludeKeys for export
 
 #### `ContentArea`
-- Max-width 900px, centered
-- Generous padding (48px top, 32px sides)
+- Main content wrapper with scroll
+- Uses globals.css `.content` class
 
 ### Form Components
 
 #### `Input`
-- **Default**: bg-tertiary border, text-primary
-- **Focus**: border-accent-primary, subtle glow
-- **Error**: border-error, error message below
-- **Disabled**: opacity 0.5, cursor not-allowed
+- Label above, input field, optional description
+- Hover: border-color transition
+- Focus: dual-layer glow
+- CSS Modules styling
 
 #### `Toggle`
-- **Off**: bg-tertiary, border-subtle
-- **On**: bg-accent-primary, white checkmark
-- **Transition**: 200ms ease
+- Label left, switch right
+- Checked: accent-primary background with glow
+- stopPropagation on wrapper div prevents accordion collapse
 
 #### `Select`
-- Custom dropdown (not native)
-- Search input at top for long lists
-- Keyboard navigation
+- Label above, custom dropdown
+- Hover: border-color transition
+- Focus: dual-layer glow
+- Supports both `options` prop and `children` for manual options
 
 #### `Card`
-- bg-secondary, border-subtle, rounded-lg (12px)
-- Header with title + optional actions
-- Content padding 24px
-
-#### `Accordion`
-- Click header → expand/collapse content
-- Smooth height animation (250ms)
-- Chevron rotation on open
+- bg-secondary, border-subtle, rounded-xl (16px)
+- Hover: border-active + subtle shadow glow
+- Optional title with border-bottom header
 
 #### `ArrayField`
-- List of items with add/remove
-- Each item is a mini-card
-- Drag handle for reorder
+- Label above, list of inputs
+- Add button with dashed border + hover glow
+- Remove button (X) on each item
+- Safe array handling
+
+#### `Button`
+- Variants: primary, secondary, ghost, danger
+- Hover effects matching theme
+- stopPropagation on click
 
 ### Feedback Components
 
-#### `Toast`
-- Bottom-right position
-- Success/error/info variants
-- Auto-dismiss after 4s
-- Slide-in animation
-
-#### `Modal`
-- Centered, backdrop blur
-- Close on backdrop click or Escape
-- Scale-in animation
-
-#### `Tooltip`
-- Dark bg, light text
-- 8px padding, small radius
-- Appears on hover after 500ms delay
-
-### Utility Components
-
-#### `Badge`
-- Small pill for status indicators
-- Variants: success, warning, error, info, neutral
-
-#### `IconButton`
-- 36px square, rounded-md
-- Hover: bg-tertiary
-- Active: scale 0.95
-
-#### `JsonPreview`
-- Syntax highlighted JSONC
-- Line numbers
-- Copy button
+#### Floating Preview
+- Fixed bottom-right
+- Shows JSONC output from generateJsonc
+- Monospace font, pre-wrap
 
 ---
 
 ## 6. Technical Approach
 
 ### Stack
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: CSS Modules + CSS Variables (no Tailwind per spec)
-- **State**: Zustand for global config state
+- **Framework**: Next.js 16 (App Router)
+- **Styling**: CSS Modules + CSS Variables (no Tailwind)
+- **State**: Zustand with `persist` middleware (localStorage)
 - **Icons**: Lucide React
-- **Fonts**: Inter + JetBrains Mono via next/font
+- **Fonts**: Inter via next/font
 
 ### Architecture
 ```
@@ -277,34 +259,33 @@ src/
 │   ├── models/page.tsx
 │   ├── formatters/page.tsx
 │   ├── commands/page.tsx
-│   └── advanced/page.tsx
+│   ├── advanced/page.tsx
+│   └── oh-my-openagent/page.tsx
 ├── components/
 │   ├── layout/
 │   │   ├── Sidebar.tsx
 │   │   ├── Header.tsx
 │   │   └── ContentArea.tsx
-│   ├── ui/
-│   │   ├── Input.tsx
-│   │   ├── Toggle.tsx
-│   │   ├── Select.tsx
-│   │   ├── Card.tsx
-│   │   ├── Accordion.tsx
-│   │   ├── ArrayField.tsx
-│   │   └── ...
-│   └── config/             # Config section-specific components
+│   └── ui/
+│       ├── Input.tsx
+│       ├── Toggle.tsx
+│       ├── Select.tsx
+│       ├── Card.tsx
+│       ├── ArrayField.tsx
+│       ├── Button.tsx
+│       └── Accordion.tsx
 ├── store/
-│   └── configStore.ts     # Zustand store
+│   └── configStore.ts     # Zustand store with persist
 ├── lib/
-│   ├── schema.ts           # JSON Schema for validation
-│   ├── generate-jsonc.ts   # JSONC generation
-│   └── import-config.ts    # Import logic
+│   ├── schema.ts           # JSON Schema for validation (placeholder)
+│   ├── generate-jsonc.ts   # JSON generation with excludeKeys
+│   └── import-config.ts    # Import logic (parseJsonc)
 └── styles/
-    ├── globals.css
-    └── variables.css
+    └── globals.css         # CSS variables, theme
 ```
 
 ### Config Schema
-Full OpenCode config schema from `https://opencode.ai/config.json`:
+Full OpenCode config schema:
 - `$schema`, `model`, `provider`, `small_model`
 - `server`, `shell`, `tools`, `agent`, `default_agent`, `share`
 - `command`, `formatter`, `permission`, `compaction`, `watcher`
@@ -312,38 +293,44 @@ Full OpenCode config schema from `https://opencode.ai/config.json`:
 - `disabled_providers`, `enabled_providers`, `experimental`
 - `autoupdate`, `snapshot`
 
+Oh My OpenAgent config stored separately at `oh_my_openagent`.
+
 ### State Shape
 ```typescript
-interface ConfigState {
-  config: OpenCodeConfig;
-  errors: Record<string, string>;
-  isDirty: boolean;
-
-  // Actions
-  updateField: (path: string, value: unknown) => void;
-  importConfig: (json: string) => void;
-  exportConfig: () => string;
-  resetConfig: () => void;
+type Store = {
+  config: OpenCodeConfig
+  setConfig: (c: OpenCodeConfig) => void
+  update: (path: string, value: any) => void
+  reset: () => void
 }
 ```
 
 ### JSONC Generation
-- Use `JSON.stringify` with circular reference handling
-- Add comments for section headers
-- Preserve `$schema` at top
-- Format with 2-space indentation
+- Use `JSON.stringify` with 2-space indentation
+- `generateJsonc(cfg, excludeKeys)` - excludeKeys for omitting `oh_my_openagent`
+
+### JSONC Import
+- `parseJsonc(text)` - strips comments, handles trailing commas, returns null on failure
+- `removeComments()` - strips `//` and `/* */` comments
+
+### Docker Self-Hosting
+```bash
+docker-compose up -d
+```
+- Dockerfile with multi-stage build
+- `output: 'standalone'` in next.config.js
 
 ---
 
 ## 7. Config Sections Detail
 
 ### General
-- Model selection (text input with model suggestions)
-- Small model selection
-- Provider options (timeout, etc.)
-- Autoupdate toggle + "notify" option
+- $schema
+- Model, Small Model
+- Autoupdate toggle
 - Snapshot toggle
 - Share mode (manual/auto/disabled)
+- Shell
 
 ### Server
 - Port number
@@ -352,36 +339,60 @@ interface ConfigState {
 - CORS origins (array)
 
 ### Agents
-- List of custom agents
-- Each agent: name, description, model, prompt, mode, permissions, temperature, max_steps
+- List of custom agents with expandable cards
+- Model, Disabled, Mode, Color, Tools, Variant, Temperature, Top_p, Max Tokens, Reasoning Effort
 
 ### Permissions
-- Global permission mode (allow/ask/deny)
-- Per-tool granular rules
-- External directory rules
+- Per-tool permission rules with expandable cards
+- Add/remove permission entries
 
 ### Tools
-- Toggle for each built-in tool (bash, edit, write, read, grep, glob, lsp, apply_patch, skill, todowrite, webfetch, websearch, question)
+- Toggle for each built-in tool (bash, edit, write, read, grep, glob, etc.)
 
 ### MCP Servers
-- List of MCP configs
-- Each: name, type (local/remote), command/url, headers, environment, enabled
+- List of MCP configs with expandable cards
+- Name, Type, Command/URL, Enabled toggle
+- Add/remove server entries
 
 ### Models
-- Provider-specific model options
-- Variants configuration
+- Provider configurations
 
 ### Formatters
-- List of formatters
-- Each: command, environment, extensions, disabled
+- List of formatters with expandable cards
+- Command, Environment, Extensions, Disabled toggle
 
 ### Commands
-- List of custom commands
-- Each: name, template, description, agent, model
+- List of custom commands with expandable cards
+- Template, Description, Agent, Model
 
 ### Advanced
 - Compaction (auto, prune, reserved)
 - Watcher ignore patterns
-- Plugin list
-- Instructions files list
+- Plugin list (ArrayField)
+- Instructions files
 - Disabled/enabled providers
+
+### Oh My OpenAgent (conditional)
+Only shown when `oh-my-openagent` or `oh-my-opencode` in plugins list.
+Separate Import/Export via page buttons (not header).
+
+Sections:
+- **Agents** - Record of agent configs with model, disabled, mode, color, tools, variant, temperature, etc.
+- **Categories** - Built-in categories: visual-engineering, ultrabrain, deep, artistry, quick, unspecified-low, unspecified-high, writing
+- **Background Task** - defaultConcurrency, staleTimeoutMs, providerConcurrency, modelConcurrency
+- **Sisyphus Agent** - disabled, default_builder_enabled, planner_enabled, replace_plan
+- **Sisyphus Tasks** - enabled, storage_path, claude_code_compat
+- **Skills** - sources (path, recursive, glob), enable, disable
+- **Hooks** - disabled_hooks list
+- **Commands** - disabled_commands list
+- **Browser Automation** - provider (playwright/agent-browser)
+- **Tmux** - enabled, layout, main_pane_size, main_pane_min_width, agent_pane_min_width
+- **Git Master** - commit_footer, include_co_authored_by
+- **Comment Checker** - custom_prompt
+- **Notification** - force_enable
+- **Disabled MCPs** - list
+- **LSP** - server configs with command, extensions, priority, env, initialization, disabled
+- **Runtime Fallback** - boolean or object with retry_on_errors, max_fallback_attempts, cooldown_seconds, timeout_seconds, notify_on_fallback
+- **Model Capabilities** - enabled, auto_refresh_on_start, refresh_timeout_ms, source_url
+- **Experimental** - key-value record
+- **Hashline Edit** - enabled, debounce_ms

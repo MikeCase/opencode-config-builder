@@ -916,6 +916,34 @@ html, body {
   border-bottom: 1px solid var(--border-subtle);
 }
 
+.floating-preview-expand-btn {
+  display: flex;
+  position: fixed;
+  right: 16px;
+  top: 80px;
+  width: 40px;
+  height: 40px;
+  background: var(--accent-gradient);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  color: white;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md), 0 0 20px rgba(99, 102, 241, 0.3);
+  z-index: 140;
+  transition: all 0.2s ease;
+}
+
+.floating-preview-expand-btn:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-lg), 0 0 25px rgba(99, 102, 241, 0.4);
+}
+
+.floating-preview-expand-btn.hidden {
+  display: none;
+}
+
 .floating-preview-title {
   font-size: 11px;
   font-weight: 600;
@@ -1206,24 +1234,24 @@ html, body {
     display: flex;
     position: fixed;
     right: 16px;
-    bottom: 16px;
-    width: 36px;
-    height: 36px;
+    top: 80px;
+    width: 40px;
+    height: 40px;
     background: var(--accent-gradient);
-    border: none;
-    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
     color: white;
     cursor: pointer;
     align-items: center;
     justify-content: center;
-    box-shadow: var(--shadow-sm), 0 0 12px rgba(99, 102, 241, 0.25);
+    box-shadow: var(--shadow-md), 0 0 20px rgba(99, 102, 241, 0.3);
     z-index: 140;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
   }
 
   .floating-preview-expand-btn:hover {
     transform: scale(1.05);
-    box-shadow: var(--shadow-md), 0 0 16px rgba(99, 102, 241, 0.35);
+    box-shadow: var(--shadow-lg), 0 0 25px rgba(99, 102, 241, 0.4);
   }
 
   .floating-preview-expand-btn.hidden {

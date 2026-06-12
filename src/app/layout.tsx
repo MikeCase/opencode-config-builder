@@ -21,6 +21,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     document.body.appendChild(script)
   }, [])
 
+  useEffect(() => {
+    if (window.innerWidth >= 1024) {
+      setPreviewCollapsed(false)
+    }
+  }, [])
+
   return (
     <html lang="en">
       <body>

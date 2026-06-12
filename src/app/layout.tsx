@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Sidebar from '../components/layout/Sidebar'
 import Header from '../components/layout/Header'
 import WhatsNewManager from '../components/ui/WhatsNew'
@@ -12,6 +12,14 @@ import { Code2 } from 'lucide-react'
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [previewCollapsed, setPreviewCollapsed] = useState(true)
+
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.src = 'https://static.cloudflareinsights.com/beacon.min.js'
+    script.defer = true
+    script.dataset.cfBeacon = '{"token": "2984ef4785d24779ab3fe194236cce12"}'
+    document.body.appendChild(script)
+  }, [])
 
   return (
     <html lang="en">

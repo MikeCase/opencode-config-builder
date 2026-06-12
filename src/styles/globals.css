@@ -223,29 +223,10 @@ html, body {
 }
 
 .sidebar-footer {
-  padding: 8px;
+  padding: 16px;
   border-top: 1px solid var(--border-subtle);
   display: flex;
-  justify-content: center;
-}
-
-.sidebar-coffee-link {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: var(--radius-md);
-  color: var(--text-tertiary);
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 500;
-  transition: color 0.15s ease, background 0.15s ease;
-  white-space: nowrap;
-}
-
-.sidebar-coffee-link:hover {
-  color: var(--accent-primary);
-  background: rgba(99, 102, 241, 0.08);
+  gap: 8px;
 }
 
 /* Main column (right side of app-shell) */

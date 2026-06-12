@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { usePathname } from 'next/navigation'
-import { Server, Wrench, Code, Users, Shield, HardDrive, Settings, Bot, Cpu, Terminal, Sparkles, X, Coffee } from 'lucide-react'
+import { Server, Wrench, Code, Users, Shield, HardDrive, Settings, Bot, Cpu, Terminal, Sparkles, X } from 'lucide-react'
 import { useConfigStore } from '../../store/configStore'
 
 type Item = { key: string; label: string; icon: React.ReactNode; href: string; badge?: string }
@@ -111,17 +111,6 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
             </div>
           ))}
         </nav>
-        <div className="sidebar-footer">
-          <a
-            href="https://buymeacoffee.com/splaq"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="sidebar-coffee-link"
-          >
-            <Coffee size={14} />
-            <span>Buy me a coffee</span>
-          </a>
-        </div>
       </aside>
     </>
   )

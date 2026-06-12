@@ -11,6 +11,8 @@ A visual configuration editor for [OpenCode](https://opencode.ai/) AI coding age
 - **Live Preview** - Floating panel shows generated JSONC as you configure
 - **Dark Theme** - Blue/purple accent colors on dark background
 - **Persistent Storage** - Config saved to browser localStorage
+- **Mobile Responsive** - Full hamburger menu, slide-in sidebar drawer, collapsible preview
+- **What's New** - Versioned changelog popup shown once per release
 
 ## Tech Stack
 
@@ -80,6 +82,18 @@ When your config includes `oh-my-openagent` or `oh-my-opencode` in the plugins l
 
 Import/Export for Oh My OpenAgent uses a separate `oh-my-openagent.jsonc` file.
 
+## Mobile UI
+
+On screens ≤768px wide:
+
+- **Hamburger menu** appears in header - tap to open sidebar drawer
+- **Sidebar** slides in from left with frosted backdrop overlay
+- **Tap backdrop, close button, or any nav link** to close drawer
+- **Live Preview** collapses to a small `</>` icon button at bottom-right
+- **Tap the icon** to expand the preview, tap "Hide" to collapse again
+
+The preview starts collapsed on mobile to maximize screen space for configuration.
+
 ## File Structure
 
 ```
@@ -97,8 +111,8 @@ src/
 │   ├── advanced/
 │   └── oh-my-openagent/
 ├── components/
-│   ├── layout/            # Sidebar, Header
-│   └── ui/               # Input, Toggle, Select, Card, ArrayField, Button
+│   ├── layout/            # Sidebar, Header, ContentArea
+│   └── ui/               # Input, Toggle, Select, Card, ArrayField, Button, WhatsNew
 ├── lib/                   # generate-jsonc, import-config, schema
 ├── store/                 # Zustand configStore
 ├── styles/               # globals.css
@@ -111,3 +125,7 @@ src/
 - `'use client'` on all components using hooks/zustand
 - Dot-path updates: `update('server.port', 4096)`
 - CSS variables for theming in `globals.css`
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for version history.

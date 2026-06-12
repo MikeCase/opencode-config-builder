@@ -5,8 +5,13 @@ import Button from '../ui/Button'
 import { useConfigStore } from '../../store/configStore'
 import { generateJsonc } from '../../lib/generate-jsonc'
 import { parseJsonc } from '../../lib/import-config'
+import { Menu } from 'lucide-react'
 
-export default function Header(){
+interface HeaderProps {
+  onMenuToggle?: () => void
+}
+
+export default function Header({ onMenuToggle }: HeaderProps){
   const fileInput = useRef<HTMLInputElement | null>(null)
   const config = useConfigStore((s) => s.config)
   const update = useConfigStore((s) => s.update)
@@ -54,10 +59,17 @@ export default function Header(){
 
   return (
     <header className="header">
-      <div style={{display:'flex', alignItems:'center', gap:12}}>
+      <div className="header-left">
+        <button
+          className="hamburger-btn"
+          onClick={onMenuToggle}
+          aria-label="Open navigation menu"
+        >
+          <Menu size={20} />
+        </button>
         <span className="logo">OpenCode Config Builder</span>
       </div>
-      <div style={{display:'flex', gap:8}}>
+      <div className="header-actions">
         <Button variant="primary" size="sm" onClick={doImport}>Import</Button>
         <input ref={fileInput} type="file" accept=".jsonc,.json" onChange={onFileChosen} style={{display:'none'}} />
         <Button variant="secondary" size="sm" onClick={doExport}>Export</Button>

@@ -80,6 +80,31 @@ function AgentCard({ name, agent, onUpdate, onDelete }: {
             checked={agent.hidden ?? false}
             onChange={(v) => onUpdate(name, { ...agent, hidden: v })}
           />
+          <Input
+            label="Color"
+            value={agent.color ?? ''}
+            onChange={(v) => onUpdate(name, { ...agent, color: v })}
+            placeholder="#ff6b6b or accent"
+            description="UI accent color for this agent"
+          />
+          <div className="field-row">
+            <Input
+              label="Top P"
+              value={agent.top_p ?? ''}
+              onChange={(v) => onUpdate(name, { ...agent, top_p: parseFloat(v) || undefined })}
+              type="number"
+              placeholder="0.9"
+              description="Nucleus sampling (0.0 - 1.0)"
+            />
+          </div>
+          <Input
+            label="Prompt"
+            value={typeof agent.prompt === 'string' ? agent.prompt : ''}
+            onChange={(v) => onUpdate(name, { ...agent, prompt: v })}
+            placeholder="{file:./prompts/build.txt}"
+            description="System prompt or file reference"
+            mono
+          />
         </div>
       )}
     </div>

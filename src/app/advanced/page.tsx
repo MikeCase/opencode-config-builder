@@ -35,7 +35,7 @@ export default function AdvancedPage() {
         <Toggle
           label="Prune Tool Outputs"
           description="Remove old tool outputs to save tokens"
-          checked={compaction.prune ?? true}
+          checked={compaction.prune ?? false}
           onChange={(v) => update('compaction', { ...compaction, prune: v })}
         />
         <Input

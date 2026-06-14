@@ -45,11 +45,15 @@ export default function GeneralPage() {
       </Card>
 
       <Card title="General Settings">
-        <Toggle
+        <Select
           label="Autoupdate"
-          description="Automatically download updates on startup"
-          checked={config?.autoupdate === true}
-          onChange={(v) => update('autoupdate', v)}
+          value={config?.autoupdate === true ? 'true' : config?.autoupdate === 'notify' ? 'notify' : 'false'}
+          onChange={(v) => update('autoupdate', v === 'true' ? true : v === 'notify' ? 'notify' : false)}
+          options={[
+            { value: 'true', label: 'Enabled - Automatically download updates' },
+            { value: 'notify', label: 'Notify - Show when updates are available' },
+            { value: 'false', label: 'Disabled - No update checks' },
+          ]}
         />
         <Toggle
           label="Snapshot"

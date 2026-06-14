@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { X, Sparkles } from 'lucide-react'
 
-const CURRENT_VERSION = '0.1.0'
+const CURRENT_VERSION = '0.2.0'
 
 const CHANGELOG: Record<string, { title: string; items: string[] }> = {
   '0.1.0': {
@@ -14,6 +14,20 @@ const CHANGELOG: Record<string, { title: string; items: string[] }> = {
       'Import/export your config as JSONC',
       'Mobile responsive design',
       'Oh My OpenAgent support',
+    ],
+  },
+  '0.2.0': {
+    title: 'Config Alignment & Bug Fixes',
+    items: [
+      'Autoupdate now supports notify-only mode',
+      'Fixed compaction.prune default to match OpenCode docs',
+      'Per-provider configuration with expandable cards',
+      'Added MCP fields: working directory, environment variables, headers, OAuth',
+      'Added agent fields: color, top_p, prompt',
+      'Oh My OpenAgent: added Team Mode configuration',
+      'Oh My OpenAgent: added missing agent fields (fallback_models, thinking, etc.)',
+      'Fixed data-loss bugs in OMO config paths',
+      'Deprecated OMO LSP section replaced with MCP-based guidance',
     ],
   },
 }

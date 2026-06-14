@@ -155,6 +155,14 @@ export default function OhMyOpenAgentPage() {
             <Input label="Top_p" value={String(agent?.top_p ?? 0)} onChange={(v: string) => patchAgent(name, { top_p: Number(v) })} />
             <Input label="Max Tokens" value={String(agent?.maxTokens ?? 0)} onChange={(v: string) => patchAgent(name, { maxTokens: Number(v) })} />
             <Input label="Reasoning Effort" value={agent?.reasoningEffort ?? ''} onChange={(v: string) => patchAgent(name, { reasoningEffort: v })} />
+            <Input label="Text Verbosity" value={agent?.textVerbosity ?? ''} onChange={(v: string) => patchAgent(name, { textVerbosity: v })} placeholder="low / medium / high" />
+            <Input label="Thinking" value={agent?.thinking ? (typeof agent.thinking === 'string' ? agent.thinking : JSON.stringify(agent.thinking)) : ''} onChange={(v: string) => patchAgent(name, { thinking: v ? { type: 'enabled', budgetTokens: parseInt(v) || 16000 } : undefined })} placeholder='16000' description="Anthropic thinking budget tokens" />
+            <div style={{ gridColumn: '1 / -1' }}>
+              <ArrayField label="Fallback Models" values={agent?.fallback_models ?? []} onChange={(v: string[]) => patchAgent(name, { fallback_models: v })} />
+            </div>
+            <div style={{ gridColumn: '1 / -1' }}>
+              <Input label="Prompt Append" value={agent?.prompt_append ?? ''} onChange={(v: string) => patchAgent(name, { prompt_append: v })} placeholder="file://./additional-context.md" description="Text appended to system prompt. Supports file:// URIs." mono />
+            </div>
           </div>
         )}</div>
       </Card>
@@ -268,9 +276,9 @@ export default function OhMyOpenAgentPage() {
 
       <SectionCard title="Sisyphus (Tasks)" defaultExpanded={false}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
-          <Toggle label="Enabled" checked={!!omo?.sisyphus_tasks?.enabled} onChange={(v: boolean) => update('oh_my_openagent.sisyphus_tasks.enabled', v)} />
-          <Input label="Storage Path" value={omo?.sisyphus_tasks?.storage_path ?? ''} onChange={(v: string) => update('oh_my_openagent.sisyphus_tasks.storage_path', v)} />
-          <Toggle label="Claude Code Compat" checked={!!omo?.sisyphus_tasks?.claude_code_compat} onChange={(v: boolean) => update('oh_my_openagent.sisyphus_tasks.claude_code_compat', v)} />
+          <Toggle label="Enabled" checked={!!omo?.sisyphus?.tasks?.enabled} onChange={(v: boolean) => update('oh_my_openagent.sisyphus.tasks.enabled', v)} />
+          <Input label="Storage Path" value={omo?.sisyphus?.tasks?.storage_path ?? ''} onChange={(v: string) => update('oh_my_openagent.sisyphus.tasks.storage_path', v)} />
+          <Toggle label="Claude Code Compat" checked={!!omo?.sisyphus?.tasks?.claude_code_compat} onChange={(v: boolean) => update('oh_my_openagent.sisyphus.tasks.claude_code_compat', v)} />
         </div>
       </SectionCard>
 
@@ -290,11 +298,29 @@ export default function OhMyOpenAgentPage() {
         <ArrayField label="Disabled Commands" values={omo?.commands?.disabled_commands ?? []} onChange={(v: any) => update('oh_my_openagent.commands.disabled_commands', v)} />
       </SectionCard>
 
+      <SectionCard title="Disabled Agents & Categories" defaultExpanded={false}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+          <ArrayField label="Disabled Agents" values={omo?.disabled_agents ?? []} onChange={(v: any) => update('oh_my_openagent.disabled_agents', v)} />
+          <ArrayField label="Disabled Categories" values={omo?.disabled_categories ?? []} onChange={(v: any) => update('oh_my_openagent.disabled_categories', v)} />
+        </div>
+        <div style={{ marginTop: '12px' }}>
+          <ArrayField label="Disabled Skills" values={omo?.disabled_skills ?? []} onChange={(v: any) => update('oh_my_openagent.disabled_skills', v)} />
+        </div>
+      </SectionCard>
+
       <SectionCard title="Browser Automation" defaultExpanded={false}>
-        <Select label="Provider" value={omo?.browser_automation?.provider ?? 'playwright'} onChange={(v: string) => patchContextSafe('oh_my_openagent.browser_automation.provider', v)} options={[
+        <Select label="Provider" value={omo?.browser_automation_engine?.provider ?? 'playwright'} onChange={(v: string) => patchContextSafe('oh_my_openagent.browser_automation_engine.provider', v)} options={[
             { value: 'playwright', label: 'playwright' },
             { value: 'agent-browser', label: 'agent-browser' },
           ]} />
+      </SectionCard>
+
+      <SectionCard title="Team Mode" defaultExpanded={false}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+          <Toggle label="Enabled" checked={!!omo?.team_mode?.enabled} onChange={(v: boolean) => update('oh_my_openagent.team_mode.enabled', v)} />
+          <Input label="Max Parallel Members" value={String(omo?.team_mode?.max_parallel_members ?? 4)} onChange={(v: string) => update('oh_my_openagent.team_mode.max_parallel_members', Number(v))} />
+          <Toggle label="Tmux Visualization" checked={!!omo?.team_mode?.tmux_visualization} onChange={(v: boolean) => update('oh_my_openagent.team_mode.tmux_visualization', v)} />
+        </div>
       </SectionCard>
 
       <SectionCard title="Tmux" defaultExpanded={false}>
@@ -330,10 +356,13 @@ export default function OhMyOpenAgentPage() {
       </SectionCard>
 
       <SectionCard title="LSP" defaultExpanded={false}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          <Toggle label="Enabled" checked={!!omo?.lsp?.enabled} onChange={(v: boolean) => update('oh_my_openagent.lsp.enabled', v)} />
-          <ArrayField label="Servers" values={omo?.lsp?.servers ?? []} onChange={(v: any) => update('oh_my_openagent.lsp.servers', v)} />
-          <Input label="Server Name" value={omo?.lsp?.default_server ?? ''} onChange={(v: string) => update('oh_my_openagent.lsp.default_server', v)} />
+        <div className="card-description" style={{ padding: '12px 0', lineHeight: 1.6 }}>
+          The top-level <code>lsp</code> config block in oh-my-openagent is <strong>deprecated</strong> and automatically stripped on startup.
+          LSP tools are now provided by the built-in <code>lsp</code> MCP server.
+        </div>
+        <div className="card-description" style={{ paddingBottom: '8px', lineHeight: 1.6 }}>
+          To disable it, add <code>&quot;lsp&quot;</code> to the <strong>Disabled MCPs</strong> section above.
+          For custom language servers, create <code>.opencode/lsp.json</code> at the project root instead.
         </div>
       </SectionCard>
 

@@ -56,21 +56,64 @@ function MCPServerCard({ name, server, onUpdate, onDelete }: {
           </div>
 
           {server.type === 'local' ? (
-            <Input
-              label="Command"
-              value={(server.command as string[])?.join(' ') ?? ''}
-              onChange={(v) => onUpdate(name, { ...server, command: v.split(' ').filter(Boolean) })}
-              placeholder="npx -y @modelcontextprotocol/server-everything"
-              description="Command and arguments to run the MCP server"
-            />
+            <>
+              <Input
+                label="Command"
+                value={(server.command as string[])?.join(' ') ?? ''}
+                onChange={(v) => onUpdate(name, { ...server, command: v.split(' ').filter(Boolean) })}
+                placeholder="npx -y @modelcontextprotocol/server-everything"
+                description="Command and arguments to run the MCP server"
+              />
+              <Input
+                label="Working Directory (cwd)"
+                value={server.cwd ?? ''}
+                onChange={(v) => onUpdate(name, { ...server, cwd: v })}
+                placeholder="./mcp-server"
+                description="Working directory for the MCP server process. Relative paths resolve from workspace."
+              />
+              <ArrayField
+                label="Environment Variables"
+                values={Array.isArray(server.environment) ? server.environment : Object.entries(server.environment ?? {}).map(([k, v]) => `${k}=${v}`)}
+                onChange={(v) => {
+                  const env: Record<string, string> = {}
+                  v.forEach((entry: string) => {
+                    const eqIdx = entry.indexOf('=')
+                    if (eqIdx > 0) env[entry.slice(0, eqIdx)] = entry.slice(eqIdx + 1)
+                  })
+                  onUpdate(name, { ...server, environment: env })
+                }}
+                placeholder="KEY=VALUE"
+              />
+            </>
           ) : (
-            <Input
-              label="URL"
-              value={server.url ?? ''}
-              onChange={(v) => onUpdate(name, { ...server, url: v })}
-              placeholder="https://mcp.example.com/mcp"
-              description="URL of the remote MCP server"
-            />
+            <>
+              <Input
+                label="URL"
+                value={server.url ?? ''}
+                onChange={(v) => onUpdate(name, { ...server, url: v })}
+                placeholder="https://mcp.example.com/mcp"
+                description="URL of the remote MCP server"
+              />
+              <ArrayField
+                label="Headers"
+                values={Array.isArray(server.headers) ? server.headers : Object.entries(server.headers ?? {}).map(([k, v]) => `${k}: ${v}`)}
+                onChange={(v) => {
+                  const hdrs: Record<string, string> = {}
+                  v.forEach((entry: string) => {
+                    const colonIdx = entry.indexOf(':')
+                    if (colonIdx > 0) hdrs[entry.slice(0, colonIdx).trim()] = entry.slice(colonIdx + 1).trim()
+                  })
+                  onUpdate(name, { ...server, headers: hdrs })
+                }}
+                placeholder="Authorization: Bearer MY_KEY"
+              />
+              <Toggle
+                label="OAuth Enabled"
+                description="Enable OAuth authentication for this server"
+                checked={server.oauth !== false && server.oauth !== undefined}
+                onChange={(v) => onUpdate(name, { ...server, oauth: v ? {} : false })}
+              />
+            </>
           )}
 
           <Toggle
@@ -80,15 +123,13 @@ function MCPServerCard({ name, server, onUpdate, onDelete }: {
             onChange={(v) => onUpdate(name, { ...server, enabled: v })}
           />
 
-          {server.type === 'remote' && (
-            <Input
-              label="Timeout (ms)"
-              value={server.timeout ?? 5000}
-              onChange={(v) => onUpdate(name, { ...server, timeout: parseInt(v) || 5000 })}
-              type="number"
-              description="Request timeout in milliseconds"
-            />
-          )}
+          <Input
+            label="Timeout (ms)"
+            value={server.timeout ?? 5000}
+            onChange={(v) => onUpdate(name, { ...server, timeout: parseInt(v) || 5000 })}
+            type="number"
+            description="Request timeout in milliseconds (default: 5000)"
+          />
         </div>
       )}
     </div>

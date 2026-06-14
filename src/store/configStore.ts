@@ -5,6 +5,7 @@ export type MCPServerConfig = {
   type?: 'local' | 'remote'
   command?: string[]
   url?: string
+  cwd?: string
   enabled?: boolean
   headers?: Record<string, string>
   environment?: Record<string, string>

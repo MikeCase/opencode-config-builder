@@ -2,6 +2,11 @@
 
 A visual configuration editor for [OpenCode](https://opencode.ai/) AI coding agent. Export `opencode.jsonc` for all OpenCode settings.
 
+> **Personal use?** Grab the [`no-coffee`](https://github.com/MikeCase/opencode-config-builder/tree/no-coffee) branch — identical to `main` without the Buy Me a Coffee link.
+> ```
+> git clone -b no-coffee https://github.com/MikeCase/opencode-config-builder.git
+> ```
+
 ## Features
 
 - **Visual Config Editor** - Point-and-click interface for all OpenCode settings

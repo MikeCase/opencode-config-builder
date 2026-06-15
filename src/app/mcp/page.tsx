@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Card from '../../components/ui/Card'
 import Input from '../../components/ui/Input'
 import Toggle from '../../components/ui/Toggle'
@@ -9,6 +9,19 @@ import ArrayField from '../../components/ui/ArrayField'
 import { Plus, Trash2, ChevronDown, ChevronRight } from 'lucide-react'
 import { useConfigStore, MCPServerConfig } from '../../store/configStore'
 
+function objToStrings(obj: Record<string, string> | undefined, sep: string): string[] {
+  return Object.entries(obj ?? {}).map(([k, v]) => `${k}${sep}${v}`)
+}
+
+function stringsToObj(entries: string[], sep: string): Record<string, string> {
+  const out: Record<string, string> = {}
+  entries.forEach((entry) => {
+    const idx = entry.indexOf(sep)
+    if (idx > 0) out[entry.slice(0, idx)] = entry.slice(idx + 1)
+  })
+  return out
+}
+
 function MCPServerCard({ name, server, onUpdate, onDelete }: {
   name: string
   server: MCPServerConfig
@@ -16,6 +29,17 @@ function MCPServerCard({ name, server, onUpdate, onDelete }: {
   onDelete: () => void
 }) {
   const [expanded, setExpanded] = useState(true)
+  const [envStrings, setEnvStrings] = useState<string[]>(() => objToStrings(server.environment, '='))
+  const [hdrStrings, setHdrStrings] = useState<string[]>(() => objToStrings(server.headers, ': '))
+  const prevType = useRef(server.type)
+  // Reset local string buffers when switching between local/remote
+  useEffect(() => {
+    if (prevType.current !== server.type) {
+      setEnvStrings(objToStrings(server.environment, '='))
+      setHdrStrings(objToStrings(server.headers, ': '))
+      prevType.current = server.type
+    }
+  }, [server.type])
 
   return (
     <div className="expandable-card">
@@ -73,14 +97,15 @@ function MCPServerCard({ name, server, onUpdate, onDelete }: {
               />
               <ArrayField
                 label="Environment Variables"
-                values={Array.isArray(server.environment) ? server.environment : Object.entries(server.environment ?? {}).map(([k, v]) => `${k}=${v}`)}
+                values={envStrings}
                 onChange={(v) => {
-                  const env: Record<string, string> = {}
-                  v.forEach((entry: string) => {
-                    const eqIdx = entry.indexOf('=')
-                    if (eqIdx > 0) env[entry.slice(0, eqIdx)] = entry.slice(eqIdx + 1)
-                  })
-                  onUpdate(name, { ...server, environment: env })
+                  setEnvStrings(v)
+                  const env = stringsToObj(v, '=')
+                  if (Object.keys(env).length > 0) {
+                    onUpdate(name, { ...server, environment: env })
+                  } else if (v.length === 0) {
+                    onUpdate(name, { ...server, environment: undefined })
+                  }
                 }}
                 placeholder="KEY=VALUE"
               />
@@ -96,14 +121,15 @@ function MCPServerCard({ name, server, onUpdate, onDelete }: {
               />
               <ArrayField
                 label="Headers"
-                values={Array.isArray(server.headers) ? server.headers : Object.entries(server.headers ?? {}).map(([k, v]) => `${k}: ${v}`)}
+                values={hdrStrings}
                 onChange={(v) => {
-                  const hdrs: Record<string, string> = {}
-                  v.forEach((entry: string) => {
-                    const colonIdx = entry.indexOf(':')
-                    if (colonIdx > 0) hdrs[entry.slice(0, colonIdx).trim()] = entry.slice(colonIdx + 1).trim()
-                  })
-                  onUpdate(name, { ...server, headers: hdrs })
+                  setHdrStrings(v)
+                  const hdrs = stringsToObj(v, ': ')
+                  if (Object.keys(hdrs).length > 0) {
+                    onUpdate(name, { ...server, headers: hdrs })
+                  } else if (v.length === 0) {
+                    onUpdate(name, { ...server, headers: undefined })
+                  }
                 }}
                 placeholder="Authorization: Bearer MY_KEY"
               />

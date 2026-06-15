@@ -105,6 +105,102 @@ function AgentCard({ name, agent, onUpdate, onDelete }: {
             description="System prompt or file reference"
             mono
           />
+
+          <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '16px', marginTop: '16px' }}>
+            <div className="label" style={{ marginBottom: '8px' }}>Permissions</div>
+            <p className="card-description" style={{ marginBottom: '12px' }}>
+              Override global permissions for this agent. Each entry maps a tool or pattern to an action.
+            </p>
+            {agent.permission && typeof agent.permission === 'object'
+              ? Object.entries(agent.permission).map(([key, val]) => (
+                  <div key={key} style={{ display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'center' }}>
+                    <div style={{ flex: 1 }}>
+                      <Input label="" value={key} onChange={(v) => {
+                        const next = { ...agent.permission as Record<string, string> }
+                        delete next[key]
+                        next[v] = val as string
+                        onUpdate(name, { ...agent, permission: next })
+                      }} placeholder="tool or pattern" />
+                    </div>
+                    <div style={{ width: '140px' }}>
+                      <Select label="" value={val as string} onChange={(v) => {
+                        onUpdate(name, { ...agent, permission: { ...agent.permission as Record<string, string>, [key]: v } })
+                      }} options={[
+                        { value: 'allow', label: 'Allow' },
+                        { value: 'ask', label: 'Ask' },
+                        { value: 'deny', label: 'Deny' },
+                      ]} />
+                    </div>
+                    <button onClick={() => {
+                      const next = { ...agent.permission as Record<string, string> }
+                      delete next[key]
+                      onUpdate(name, { ...agent, permission: Object.keys(next).length > 0 ? next : undefined })
+                    }} className="expandable-card-delete" style={{ marginTop: '4px' }}>
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ))
+              : null}
+            <button onClick={() => {
+              const base = agent.permission && typeof agent.permission === 'object'
+                ? { ...agent.permission as Record<string, string> }
+                : {}
+              onUpdate(name, { ...agent, permission: { ...base, '': 'allow' } })
+            }} className="add-item-btn" style={{ marginTop: 0 }}>
+              <Plus size={14} /> Add Permission Rule
+            </button>
+          </div>
+
+          <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '16px', marginTop: '16px' }}>
+            <div className="label" style={{ marginBottom: '8px' }}>
+              Tools
+              <span style={{ fontSize: '11px', fontWeight: 400, marginLeft: '8px', color: 'var(--warning)' }}>
+                (deprecated — use Permissions instead)
+              </span>
+            </div>
+            <p className="card-description" style={{ marginBottom: '12px' }}>
+              Enable or disable specific tools for this agent. Deprecated — prefer the Permissions field above.
+            </p>
+            {agent.tools && typeof agent.tools === 'object' && Object.keys(agent.tools).length > 0
+              ? Object.entries(agent.tools).map(([tool, enabled]) => (
+                  <div key={tool} style={{ display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'center' }}>
+                    <div style={{ flex: 1 }}>
+                      <Input label="" value={tool} onChange={(v) => {
+                        const next = { ...agent.tools as Record<string, boolean> }
+                        delete next[tool]
+                        next[v] = enabled as boolean
+                        onUpdate(name, { ...agent, tools: next })
+                      }} placeholder="tool name" />
+                    </div>
+                    <div style={{ width: '100px' }}>
+                      <Select label="" value={String(enabled)} onChange={(v) => {
+                        onUpdate(name, { ...agent, tools: { ...agent.tools as Record<string, boolean>, [tool]: v === 'true' } })
+                      }} options={[
+                        { value: 'true', label: 'Enabled' },
+                        { value: 'false', label: 'Disabled' },
+                      ]} />
+                    </div>
+                    <button onClick={() => {
+                      const next = { ...agent.tools as Record<string, boolean> }
+                      delete next[tool]
+                      onUpdate(name, { ...agent, tools: Object.keys(next).length > 0 ? next : undefined })
+                    }} className="expandable-card-delete">
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ))
+              : (
+                <p className="card-description" style={{ marginBottom: '8px' }}>No tool overrides configured.</p>
+              )}
+            <button onClick={() => {
+              const base = agent.tools && typeof agent.tools === 'object'
+                ? { ...agent.tools as Record<string, boolean> }
+                : {}
+              onUpdate(name, { ...agent, tools: { ...base, '': true } })
+            }} className="add-item-btn" style={{ marginTop: 0 }}>
+              <Plus size={14} /> Add Tool Override
+            </button>
+          </div>
         </div>
       )}
     </div>

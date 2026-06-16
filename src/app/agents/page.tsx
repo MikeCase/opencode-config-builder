@@ -235,7 +235,7 @@ export default function AgentsPage() {
         <p className="page-description">Configure specialized agents for specific tasks.</p>
       </div>
 
-      <Card title="Custom Agents">
+      <Card title="Custom Agents" docUrl="https://opencode.ai/docs/agents/">
         {Object.keys(agents).length === 0 ? (
           <div className="empty-state-inline">
             No custom agents configured. Add one to get started.
@@ -257,7 +257,7 @@ export default function AgentsPage() {
         </button>
       </Card>
 
-      <Card title="Default Agent">
+      <Card title="Default Agent" docUrl="https://opencode.ai/docs/config/#default-agent">
         <Input
           label="Default Agent"
           value={config?.default_agent ?? ''}

@@ -18,7 +18,7 @@ export default function GeneralPage() {
         <p className="page-description">Configure your OpenCode provider, model, and general settings.</p>
       </div>
 
-      <Card title="Model & Provider">
+      <Card title="Model & Provider" docUrl="https://opencode.ai/docs/config/#models">
         <Input
           label="$schema"
           value={config?.$schema ?? 'https://opencode.ai/config.json'}
@@ -44,7 +44,7 @@ export default function GeneralPage() {
         </div>
       </Card>
 
-      <Card title="General Settings">
+      <Card title="General Settings" docUrl="https://opencode.ai/docs/config/">
         <Select
           label="Autoupdate"
           value={config?.autoupdate === true ? 'true' : config?.autoupdate === 'notify' ? 'notify' : 'false'}
@@ -73,7 +73,7 @@ export default function GeneralPage() {
         />
       </Card>
 
-      <Card title="Shell">
+      <Card title="Shell" docUrl="https://opencode.ai/docs/config/#shell">
         <Input
           label="Shell"
           value={config?.shell ?? ''}

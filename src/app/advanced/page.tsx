@@ -21,7 +21,7 @@ export default function AdvancedPage() {
         <p className="page-description">Fine-tune advanced settings for performance and behavior.</p>
       </div>
 
-      <Card title="Context Compaction">
+      <Card title="Context Compaction" docUrl="https://opencode.ai/docs/config/#compaction">
         <p className="card-description">
           Control how OpenCode manages long conversations by compacting context.
         </p>
@@ -47,7 +47,7 @@ export default function AdvancedPage() {
         />
       </Card>
 
-      <Card title="File Watcher">
+      <Card title="File Watcher" docUrl="https://opencode.ai/docs/config/#watcher">
         <p className="card-description">
           Configure which directories to ignore when watching for file changes.
         </p>
@@ -60,7 +60,7 @@ export default function AdvancedPage() {
         />
       </Card>
 
-      <Card title="Plugins">
+      <Card title="Plugins" docUrl="https://opencode.ai/docs/config/#plugins">
         <p className="card-description">
           Load plugins from npm or local files.
         </p>
@@ -73,7 +73,7 @@ export default function AdvancedPage() {
         />
       </Card>
 
-      <Card title="Instructions">
+      <Card title="Instructions" docUrl="https://opencode.ai/docs/config/#instructions">
         <p className="card-description">
           Include instruction files that provide context to the model.
         </p>
@@ -86,7 +86,7 @@ export default function AdvancedPage() {
         />
       </Card>
 
-      <Card title="Provider Restrictions">
+      <Card title="Provider Restrictions" docUrl="https://opencode.ai/docs/config/#disabled-providers">
         <p className="card-description">
           Restrict which providers can be used.
         </p>

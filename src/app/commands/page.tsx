@@ -106,7 +106,7 @@ export default function CommandsPage() {
         <p className="page-description">Create custom commands for repetitive tasks.</p>
       </div>
 
-      <Card title="Custom Commands">
+      <Card title="Custom Commands" docUrl="https://opencode.ai/docs/config/#commands">
         <p className="card-description">
           Define custom commands that can be invoked with <code className="code-inline">/command-name</code> in the chat.
         </p>

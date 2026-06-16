@@ -20,7 +20,7 @@ export default function ServerPage() {
         <p className="page-description">Configure the OpenCode server for web and CLI access.</p>
       </div>
 
-      <Card title="Network">
+      <Card title="Network" docUrl="https://opencode.ai/docs/config/#server">
         <div className="field-row">
           <Input
             label="Port"
@@ -39,7 +39,7 @@ export default function ServerPage() {
         </div>
       </Card>
 
-      <Card title="Service Discovery">
+      <Card title="Service Discovery" docUrl="https://opencode.ai/docs/config/#server">
         <Toggle
           label="mDNS"
           description="Enable to discover OpenCode servers on your network"
@@ -55,7 +55,7 @@ export default function ServerPage() {
         />
       </Card>
 
-      <Card title="CORS">
+      <Card title="CORS" docUrl="https://opencode.ai/docs/config/#server">
         <ArrayField
           label="Allowed Origins"
           values={server.cors ?? []}

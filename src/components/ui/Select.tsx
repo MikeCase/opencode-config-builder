@@ -1,5 +1,5 @@
 import React from 'react'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Info } from 'lucide-react'
 import styles from './Select.module.css'
 
 interface SelectOption {
@@ -13,13 +13,21 @@ interface SelectProps {
   onChange: (v: string) => void
   options: SelectOption[]
   description?: string
+  docUrl?: string
 }
 
-export default function Select({ label, value, onChange, options, description, children }: SelectProps & { children?: React.ReactNode }) {
+export default function Select({ label, value, onChange, options, description, docUrl, children }: SelectProps & { children?: React.ReactNode }) {
   const opts = options ?? []
   return (
     <div className={styles.field} onClick={(e) => e.stopPropagation()}>
-      <label className={styles.label}>{label}</label>
+      <div className={styles.labelRow}>
+        <label className={styles.label}>{label}</label>
+        {docUrl && (
+          <a href={docUrl} target="_blank" rel="noopener noreferrer" className={styles.docLink} onClick={(e) => e.stopPropagation()} aria-label={`Docs: ${label}`}>
+            <Info size={13} />
+          </a>
+        )}
+      </div>
       <div className={styles.selectWrapper}>
         <select className={styles.select} value={value} onChange={(e) => onChange(e.target.value)}>
           {opts.length > 0 ? opts.map((opt) => (

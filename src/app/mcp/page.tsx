@@ -194,7 +194,7 @@ export default function MCPPage() {
         <p className="page-description">Add Model Context Protocol servers for external tools and integrations.</p>
       </div>
 
-      <Card title="MCP Configurations">
+      <Card title="MCP Configurations" docUrl="https://opencode.ai/docs/mcp-servers/">
         <p className="card-description">
           MCP servers add external tools to OpenCode. Once added, they're available as tools in your prompts.
         </p>

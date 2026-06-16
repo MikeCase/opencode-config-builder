@@ -31,9 +31,10 @@ const CHANGELOG: Record<string, { title: string; items: string[] }> = {
     ],
   },
   '0.2.1': {
-    title: 'Clipboard Copy',
+    title: 'Clipboard Copy & Doc Links',
     items: [
       'Live Preview now includes a Copy button to copy your config to clipboard',
+      'Documentation links added to every config option — click the ⓘ icon next to any field label to open the docs',
     ],
   },
 }

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { X, Sparkles } from 'lucide-react'
 
-const CURRENT_VERSION = '0.2.0'
+const CURRENT_VERSION = '0.2.1'
 
 const CHANGELOG: Record<string, { title: string; items: string[] }> = {
   '0.1.0': {
@@ -28,6 +28,12 @@ const CHANGELOG: Record<string, { title: string; items: string[] }> = {
       'Oh My OpenAgent: added missing agent fields (fallback_models, thinking, etc.)',
       'Fixed data-loss bugs in OMO config paths',
       'Deprecated OMO LSP section replaced with MCP-based guidance',
+    ],
+  },
+  '0.2.1': {
+    title: 'Clipboard Copy',
+    items: [
+      'Live Preview now includes a Copy button to copy your config to clipboard',
     ],
   },
 }

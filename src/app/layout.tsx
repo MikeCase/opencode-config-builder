@@ -57,14 +57,28 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 function LivePreview({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const config = useConfigStore((s) => s.config)
   const json = generateJsonc(config ?? {})
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(json)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {}
+  }
 
   return (
     <aside className={`floating-preview${collapsed ? ' collapsed' : ''}`} aria-label="live-config-preview">
       <div className="floating-preview-header">
         <span className="floating-preview-title">Live Preview</span>
-        <button className="floating-preview-toggle" onClick={onToggle} aria-label={collapsed ? 'Expand preview' : 'Collapse preview'}>
-          {collapsed ? 'Show' : 'Hide'}
-        </button>
+        <div className="floating-preview-actions">
+          <button className={`floating-preview-copy${copied ? ' copied' : ''}`} onClick={handleCopy} aria-label="Copy config to clipboard">
+            {copied ? 'Copied!' : 'Copy'}
+          </button>
+          <button className="floating-preview-toggle" onClick={onToggle} aria-label={collapsed ? 'Expand preview' : 'Collapse preview'}>
+            {collapsed ? 'Show' : 'Hide'}
+          </button>
+        </div>
       </div>
       <div className="floating-preview-content">
         <pre style={{whiteSpace:'pre-wrap', margin:0}}>{json}</pre>

@@ -38,7 +38,7 @@ export default function ToolsPage() {
         <p className="page-description">Enable or disable built-in tools that the LLM can use.</p>
       </div>
 
-      <Card title="Built-in Tools">
+      <Card title="Built-in Tools" docUrl="https://opencode.ai/docs/tools/">
         <p className="card-description">
           These tools allow the LLM to perform actions in your codebase.
         </p>

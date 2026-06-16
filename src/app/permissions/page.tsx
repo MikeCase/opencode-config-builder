@@ -128,7 +128,7 @@ export default function PermissionsPage() {
         <p className="page-description">Control which actions require approval to run.</p>
       </div>
 
-      <Card title="Global Default">
+      <Card title="Global Default" docUrl="https://opencode.ai/docs/permissions/">
         <Select
           label="Default Permission"
           value={globalDefault}
@@ -138,7 +138,7 @@ export default function PermissionsPage() {
         />
       </Card>
 
-      <Card title="Tool Permissions">
+      <Card title="Tool Permissions" docUrl="https://opencode.ai/docs/permissions/">
         <p className="card-description">
           Configure granular permissions for each tool. Last matching rule wins.
         </p>
@@ -162,7 +162,7 @@ export default function PermissionsPage() {
         })}
       </Card>
 
-      <Card title="External Directories">
+      <Card title="External Directories" docUrl="https://opencode.ai/docs/permissions/">
         <p className="card-description">
           Allow tool calls that touch paths outside your project working directory.
         </p>

@@ -93,7 +93,7 @@ export default function FormattersPage() {
         <p className="page-description">Configure code formatters for automatic code styling.</p>
       </div>
 
-      <Card title="Code Formatters">
+      <Card title="Code Formatters" docUrl="https://opencode.ai/docs/config/#formatters">
         <p className="card-description">
           Configure code formatters that can be used to format code during sessions.
         </p>

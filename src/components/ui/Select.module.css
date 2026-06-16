@@ -40,11 +40,32 @@
   margin-bottom: 20px;
 }
 
+.labelRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
 .label {
   display: block;
   font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
-  margin-bottom: 6px;
   letter-spacing: 0.01em;
+}
+
+.docLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: color 0.15s ease;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.docLink:hover {
+  color: var(--accent-primary);
 }

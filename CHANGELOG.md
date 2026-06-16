@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - Live Preview: Copy button to copy generated config to clipboard
+- Doc links: ⓘ icon next to every config field label linking to OpenCode docs
 
 ## [0.1.0] - 2026-06-12
 

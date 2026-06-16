@@ -47,7 +47,7 @@ export default function ModelsPage() {
         <p className="page-description">Configure provider options and model-specific settings.</p>
       </div>
 
-      <Card title="Provider Configurations">
+      <Card title="Provider Configurations" docUrl="https://opencode.ai/docs/config/#models">
         <p className="card-description">
           Configure per-provider options like timeout and chunk timeout. Add a provider entry for each service you use (e.g., anthropic, openai).
         </p>
@@ -115,7 +115,7 @@ export default function ModelsPage() {
         </button>
       </Card>
 
-      <Card title="Model Variants">
+      <Card title="Model Variants" docUrl="https://opencode.ai/docs/models/">
         <p className="card-description">
           Many models support multiple variants with different configurations.
         </p>
@@ -130,7 +130,7 @@ export default function ModelsPage() {
         </div>
       </Card>
 
-      <Card title="Provider-Specific">
+      <Card title="Provider-Specific" docUrl="https://opencode.ai/docs/config/#amazon-bedrock">
         <p className="card-description">
           Advanced options for specific providers like Amazon Bedrock.
         </p>

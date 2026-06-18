@@ -79,36 +79,6 @@ export type OpenCodeConfig = {
   disabled_providers?: string[]
   enabled_providers?: string[]
   experimental?: Record<string, any>
-  oh_my_openagent?: Record<string, any>
-}
-
-type OhMyOpenAgentConfig = {
-  agents?: Record<string, any>
-  categories?: Record<string, any>
-  disabled_agents?: string[]
-  disabled_categories?: string[]
-  background_task?: {
-    defaultConcurrency?: number
-    staleTimeoutMs?: number
-    providerConcurrency?: Record<string, number>
-    modelConcurrency?: Record<string, number>
-  }
-  sisyphus_agent?: { disabled?: boolean; default_builder_enabled?: boolean; planner_enabled?: boolean; replace_plan?: boolean }
-  sisyphus?: { tasks?: { enabled?: boolean; storage_path?: string; claude_code_compat?: boolean } }
-  skills?: { sources?: { path: string; recursive?: boolean; glob?: string }[]; enable?: string[]; disable?: string[]; [key: string]: any }
-  hooks?: { disabled_hooks?: string[]; [key: string]: any }
-  commands?: { disabled_commands?: string[]; [key: string]: any }
-  browser_automation_engine?: { provider?: string }
-  tmux?: { enabled?: boolean; layout?: string; main_pane_size?: number; main_pane_min_width?: number; agent_pane_min_width?: number }
-  git_master?: { commit_footer?: boolean; include_co_authored_by?: boolean }
-  comment_checker?: { custom_prompt?: string }
-  notification?: { force_enable?: boolean }
-  disabled_mcps?: string[]
-  lsp?: Record<string, { command?: string[]; extensions?: string[]; priority?: number; env?: Record<string, string>; initialization?: object; disabled?: boolean }>
-  runtime_fallback?: boolean | { enabled?: boolean; retry_on_errors?: number[]; max_fallback_attempts?: number; cooldown_seconds?: number; timeout_seconds?: number; notify_on_fallback?: boolean }
-  model_capabilities?: { enabled?: boolean; auto_refresh_on_start?: boolean; refresh_timeout_ms?: number; source_url?: string }
-  experimental?: Record<string, any>
-  hashline_edit?: { enabled?: boolean; debounce_ms?: number }
 }
 
 type Store = {

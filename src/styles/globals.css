@@ -612,40 +612,6 @@ html, body {
   padding-left: 20px;
 }
 
-/* Oh My OpenAgent page */
-.omo-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border-subtle);
-  position: relative;
-}
-
-.omo-header::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 48px;
-  height: 2px;
-  background: var(--accent-primary);
-  border-radius: 1px;
-}
-
-.omo-header h1 {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0;
-  letter-spacing: -0.02em;
-}
-
-.omo-header-actions {
-  display: flex;
-  gap: 8px;
-}
 
 
 

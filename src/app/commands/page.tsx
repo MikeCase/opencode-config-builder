@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Card from '../../components/ui/Card'
 import Input from '../../components/ui/Input'
 import Select from '../../components/ui/Select'
-import { Plus, Trash2, ChevronDown, ChevronRight } from 'lucide-react'
+import { Plus, Trash2, ChevronDown, ChevronRight, Terminal } from 'lucide-react'
 import { useConfigStore, CommandConfig } from '../../store/configStore'
 
 function CommandCard({ name, command, onUpdate, onDelete }: {
@@ -113,6 +113,7 @@ export default function CommandsPage() {
 
         {Object.keys(commands).length === 0 ? (
           <div className="empty-state-inline">
+            <div className="empty-state-icon-wrap"><Terminal size={24} /></div>
             No custom commands configured. Add one to get started.
           </div>
         ) : (

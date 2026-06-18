@@ -5,7 +5,7 @@ import Card from '../../components/ui/Card'
 import Input from '../../components/ui/Input'
 import Toggle from '../../components/ui/Toggle'
 import ArrayField from '../../components/ui/ArrayField'
-import { Plus, Trash2, ChevronDown, ChevronRight } from 'lucide-react'
+import { Plus, Trash2, ChevronDown, ChevronRight, Code } from 'lucide-react'
 import { useConfigStore, FormatterConfig } from '../../store/configStore'
 
 function FormatterCard({ name, formatter, onUpdate, onDelete }: {
@@ -100,6 +100,7 @@ export default function FormattersPage() {
 
         {Object.keys(formatters).length === 0 ? (
           <div className="empty-state-inline">
+            <div className="empty-state-icon-wrap"><Code size={24} /></div>
             No formatters configured. Add one to get started.
           </div>
         ) : (

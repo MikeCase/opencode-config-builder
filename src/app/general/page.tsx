@@ -57,7 +57,7 @@ export default function GeneralPage() {
         />
         <Toggle
           label="Snapshot"
-          description="Track file changes for undo/redo"
+          description="Track file changes for config state rollback"
           checked={config?.snapshot ?? true}
           onChange={(v) => update('snapshot', v)}
         />

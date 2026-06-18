@@ -80,14 +80,31 @@ export default function WhatsNewManager() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    const lastSeen = localStorage.getItem('opencode-config-version')
-    if (lastSeen !== CURRENT_VERSION) {
+    const stored = localStorage.getItem('opencode-config-version')
+    if (!stored) {
+      setVisible(true)
+      return
+    }
+    try {
+      const parsed = JSON.parse(stored)
+      if (parsed.version !== CURRENT_VERSION) {
+        setVisible(true)
+      } else if (parsed.dismissedAt) {
+        const elapsed = Date.now() - new Date(parsed.dismissedAt).getTime()
+        if (elapsed > 24 * 60 * 60 * 1000) {
+          setVisible(true)
+        }
+      }
+    } catch {
       setVisible(true)
     }
   }, [])
 
   const handleDismiss = () => {
-    localStorage.setItem('opencode-config-version', CURRENT_VERSION)
+    localStorage.setItem('opencode-config-version', JSON.stringify({
+      version: CURRENT_VERSION,
+      dismissedAt: new Date().toISOString(),
+    }))
     setVisible(false)
   }
 

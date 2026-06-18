@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { X, Sparkles } from 'lucide-react'
 
-const CURRENT_VERSION = '0.2.1'
+const CURRENT_VERSION = '0.2.2'
 
 const CHANGELOG: Record<string, { title: string; items: string[] }> = {
   '0.1.0': {
@@ -35,6 +35,18 @@ const CHANGELOG: Record<string, { title: string; items: string[] }> = {
     items: [
       'Live Preview now includes a Copy button to copy your config to clipboard',
       'Documentation links added to every config option — click the ⓘ icon next to any field label to open the docs',
+    ],
+  },
+  '0.2.2': {
+    title: 'Design Refinement & UX Polish',
+    items: [
+      'Live Preview now includes JSON syntax highlighting (keys, strings, numbers, booleans in color)',
+      'Added Cmd+S / Ctrl+S shortcut to quickly export your config',
+      'Toast notifications appear for export, copy, and reset actions',
+      'Expanded card headers now keyboard-accessible with aria labels',
+      'Empty states now include contextual icons across all pages',
+      'Improved card contrast and refined accent color usage',
+      'What\'s New modal is smarter — only shows once per 24 hours after dismissal',
     ],
   },
 }

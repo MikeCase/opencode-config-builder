@@ -5,7 +5,7 @@ import Card from '../../components/ui/Card'
 import Input from '../../components/ui/Input'
 import Toggle from '../../components/ui/Toggle'
 import Select from '../../components/ui/Select'
-import { Plus, Trash2, ChevronDown, ChevronRight } from 'lucide-react'
+import { Plus, Trash2, ChevronDown, ChevronRight, Users } from 'lucide-react'
 import { useConfigStore, AgentConfig } from '../../store/configStore'
 
 function AgentCard({ name, agent, onUpdate, onDelete }: {
@@ -238,6 +238,7 @@ export default function AgentsPage() {
       <Card title="Custom Agents" docUrl="https://opencode.ai/docs/agents/">
         {Object.keys(agents).length === 0 ? (
           <div className="empty-state-inline">
+            <div className="empty-state-icon-wrap"><Users size={24} /></div>
             No custom agents configured. Add one to get started.
           </div>
         ) : (

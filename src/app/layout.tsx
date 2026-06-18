@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Sidebar from '../components/layout/Sidebar'
 import Header from '../components/layout/Header'
 import WhatsNewManager from '../components/ui/WhatsNew'
@@ -12,6 +12,14 @@ import { Code2 } from 'lucide-react'
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [previewCollapsed, setPreviewCollapsed] = useState(true)
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const showToast = useCallback((msg: string) => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    setToastMessage(msg)
+    toastTimerRef.current = setTimeout(() => setToastMessage(null), 2000)
+  }, [])
 
   useEffect(() => {
     const script = document.createElement('script')
@@ -21,11 +29,35 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     document.body.appendChild(script)
   }, [])
 
+  // Cmd+S export shortcut + show-toast custom event listener
   useEffect(() => {
-    if (window.innerWidth >= 1024) {
-      setPreviewCollapsed(false)
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault()
+        const config = useConfigStore.getState().config
+        const { plain } = generateJsonc(config ?? {}, ['oh_my_openagent'])
+        const blob = new Blob([plain], { type: 'application/jsonc' })
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = 'config.jsonc'
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        showToast('Exported!')
+      }
     }
-  }, [])
+
+    const handleToastEvent = (e: CustomEvent) => {
+      showToast(e.detail)
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('show-toast', handleToastEvent as EventListener)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.removeEventListener('show-toast', handleToastEvent as EventListener)
+    }
+  }, [showToast])
 
   return (
     <html lang="en">
@@ -40,7 +72,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main className="content">{children}</main>
           </div>
         </div>
-        <LivePreview collapsed={previewCollapsed} onToggle={() => setPreviewCollapsed(c => !c)} />
+        <LivePreview
+          collapsed={previewCollapsed}
+          onToggle={() => setPreviewCollapsed(c => !c)}
+          showToast={showToast}
+        />
         <button
           className={`floating-preview-expand-btn${previewCollapsed ? '' : ' hidden'}`}
           onClick={() => setPreviewCollapsed(false)}
@@ -49,20 +85,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Code2 size={18} />
         </button>
         <WhatsNewManager />
+        <Toast message={toastMessage} />
       </body>
     </html>
   )
 }
 
-function LivePreview({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
+function LivePreview({ collapsed, onToggle, showToast }: { collapsed: boolean; onToggle: () => void; showToast: (msg: string) => void }) {
   const config = useConfigStore((s) => s.config)
-  const json = generateJsonc(config ?? {})
+  const { html, plain } = generateJsonc(config ?? {})
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(json)
+      await navigator.clipboard.writeText(plain)
       setCopied(true)
+      showToast('Copied!')
       setTimeout(() => setCopied(false), 2000)
     } catch {}
   }
@@ -80,9 +118,47 @@ function LivePreview({ collapsed, onToggle }: { collapsed: boolean; onToggle: ()
           </button>
         </div>
       </div>
-      <div className="floating-preview-content">
-        <pre style={{whiteSpace:'pre-wrap', margin:0}}>{json}</pre>
+      <div className="preview-content">
+        <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>
+          <code dangerouslySetInnerHTML={{ __html: html }} />
+        </pre>
       </div>
     </aside>
+  )
+}
+
+function Toast({ message }: { message: string | null }) {
+  if (!message) return null
+
+  return (
+    <>
+      <style>{`
+        @keyframes toastIn {
+          from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+          to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+      `}</style>
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '24px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          padding: '10px 20px',
+          background: 'var(--bg-elevated)',
+          border: '1px solid var(--border-active)',
+          borderRadius: 'var(--radius-md)',
+          color: 'var(--text-primary)',
+          fontSize: '14px',
+          fontWeight: 500,
+          zIndex: 1000,
+          boxShadow: 'var(--shadow-lg)',
+          animation: 'toastIn 0.2s ease',
+          pointerEvents: 'none',
+        }}
+      >
+        {message}
+      </div>
+    </>
   )
 }

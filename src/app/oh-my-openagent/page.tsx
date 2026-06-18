@@ -223,8 +223,8 @@ export default function OhMyOpenAgentPage() {
           <Button variant="secondary" onClick={() => {
             const omo = config?.oh_my_openagent
             if (!omo) { alert('No config to export'); return }
-            const content = generateJsonc(omo)
-            const blob = new Blob([content], { type: 'application/jsonc' })
+            const { plain } = generateJsonc(omo)
+            const blob = new Blob([plain], { type: 'application/jsonc' })
             const a = document.createElement('a')
             a.href = URL.createObjectURL(blob)
             a.download = 'oh-my-openagent.jsonc'

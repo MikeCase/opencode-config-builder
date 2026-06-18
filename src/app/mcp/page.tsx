@@ -6,7 +6,7 @@ import Input from '../../components/ui/Input'
 import Toggle from '../../components/ui/Toggle'
 import Select from '../../components/ui/Select'
 import ArrayField from '../../components/ui/ArrayField'
-import { Plus, Trash2, ChevronDown, ChevronRight } from 'lucide-react'
+import { Plus, Trash2, ChevronDown, ChevronRight, HardDrive } from 'lucide-react'
 import { useConfigStore, MCPServerConfig } from '../../store/configStore'
 
 function objToStrings(obj: Record<string, string> | undefined, sep: string): string[] {
@@ -201,6 +201,7 @@ export default function MCPPage() {
 
         {Object.keys(mcpServers).length === 0 ? (
           <div className="empty-state-inline">
+            <div className="empty-state-icon-wrap"><HardDrive size={24} /></div>
             No MCP servers configured. Add one to get started.
           </div>
         ) : (

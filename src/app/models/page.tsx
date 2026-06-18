@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Card from '../../components/ui/Card'
 import Input from '../../components/ui/Input'
 import Toggle from '../../components/ui/Toggle'
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2, Cpu } from 'lucide-react'
 import Button from '../../components/ui/Button'
 import { useConfigStore } from '../../store/configStore'
 
@@ -54,6 +54,7 @@ export default function ModelsPage() {
 
         {providerNames.length === 0 ? (
           <div className="empty-state-inline">
+            <div className="empty-state-icon-wrap"><Cpu size={24} /></div>
             No provider configurations. Add one to configure timeouts and options.
           </div>
         ) : (

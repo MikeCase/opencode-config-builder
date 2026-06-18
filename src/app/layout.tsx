@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
         e.preventDefault()
         const config = useConfigStore.getState().config
-        const { plain } = generateJsonc(config ?? {}, ['oh_my_openagent'])
+        const { plain } = generateJsonc(config ?? {})
         const blob = new Blob([plain], { type: 'application/jsonc' })
         const a = document.createElement('a')
         a.href = URL.createObjectURL(blob)

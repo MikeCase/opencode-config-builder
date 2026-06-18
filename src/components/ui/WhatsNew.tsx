@@ -13,7 +13,6 @@ const CHANGELOG: Record<string, { title: string; items: string[] }> = {
       '10 configuration sections with live preview',
       'Import/export your config as JSONC',
       'Mobile responsive design',
-      'Oh My OpenAgent support',
     ],
   },
   '0.2.0': {
@@ -24,10 +23,6 @@ const CHANGELOG: Record<string, { title: string; items: string[] }> = {
       'Per-provider configuration with expandable cards',
       'Added MCP fields: working directory, environment variables, headers, OAuth',
       'Added agent fields: color, top_p, prompt',
-      'Oh My OpenAgent: added Team Mode configuration',
-      'Oh My OpenAgent: added missing agent fields (fallback_models, thinking, etc.)',
-      'Fixed data-loss bugs in OMO config paths',
-      'Deprecated OMO LSP section replaced with MCP-based guidance',
     ],
   },
   '0.2.1': {

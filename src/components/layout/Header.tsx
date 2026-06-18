@@ -41,7 +41,7 @@ export default function Header({ onMenuToggle }: HeaderProps){
   }
 
   const doExport = () => {
-    const { plain } = generateJsonc(config ?? {}, ['oh_my_openagent'])
+    const { plain } = generateJsonc(config ?? {})
     const blob = new Blob([plain], { type: 'application/jsonc' })
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)

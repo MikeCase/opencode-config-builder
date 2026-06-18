@@ -2,8 +2,7 @@
 
 import React from 'react'
 import { usePathname } from 'next/navigation'
-import { Server, Wrench, Code, Users, Shield, HardDrive, Settings, Bot, Cpu, Terminal, Sparkles, X } from 'lucide-react'
-import { useConfigStore } from '../../store/configStore'
+import { Server, Wrench, Code, Users, Shield, HardDrive, Settings, Bot, Cpu, Terminal, X } from 'lucide-react'
 
 type Item = { key: string; label: string; icon: React.ReactNode; href: string; badge?: string }
 
@@ -14,8 +13,6 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname()
-  const config = useConfigStore((s) => s.config)
-  const hasOhMy = config?.plugin?.some((p: string) => p.includes('oh-my-openagent') || p.includes('oh-my-opencode'))
 
   const sections: { label: string; items: Item[] }[] = [
     {
@@ -37,22 +34,6 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         { key: 'commands', label: 'Commands', href: '/commands', icon: <Terminal /> },
       ],
     },
-    ...(hasOhMy
-      ? [
-          {
-            label: 'Plugins',
-            items: [
-              {
-                key: 'oh-my-openagent',
-                label: 'Oh My OpenAgent',
-                href: '/oh-my-openagent',
-                icon: <Sparkles />,
-                badge: 'NEW',
-              },
-            ],
-          },
-        ]
-      : []),
     {
       label: 'Advanced',
       items: [{ key: 'advanced', label: 'Advanced', href: '/advanced', icon: <Bot /> }],

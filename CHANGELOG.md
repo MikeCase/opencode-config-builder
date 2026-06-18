@@ -4,6 +4,36 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.2.2] - 2026-06-17
+
+### Added
+
+- JSON syntax highlighting in Live Preview (keys, strings, numbers, booleans)
+- Cmd+S / Ctrl+S keyboard shortcut to export config
+- Toast notifications for export, copy, and reset actions
+- Contextual empty-state icons across MCP, Agents, Formatters, Commands, Models pages
+- 24-hour cooldown on What's New modal after dismissal
+
+### Changed
+
+- Reduced gradient usage — accent gradient reserved for primary buttons
+- Improved card contrast with new `--bg-card` design token
+- Description text bumped to 13px for readability
+- Floating preview width reduced to 380px for better content balance
+- Snapshot toggle rephrased (no undo/redo UI exists)
+
+### Fixed
+
+- Copy button "Copied!" state now has correct CSS variable references
+- What's New modal now shows per-version-changes correctly with timestamp
+- Several minor CSS variable and layout inconsistencies
+
+### Accessibility
+
+- Global `:focus-visible` outlines for keyboard navigation
+- Accordion headers now have `role="button"`, `tabIndex`, `aria-expanded`
+- Keyboard support (Enter/Space) for accordion toggles
+
 ## [0.2.1] - 2026-06-15
 
 ### Added

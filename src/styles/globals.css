@@ -335,6 +335,30 @@ html, body {
   border-color: var(--border-active);
 }
 
+/* Header "What's New" icon button */
+.whatsnew-icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.whatsnew-icon-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-active);
+}
+
 /* Sidebar overlay backdrop (mobile) */
 .sidebar-overlay {
   display: none;

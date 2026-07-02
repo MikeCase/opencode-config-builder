@@ -5,13 +5,15 @@ import Button from '../ui/Button'
 import { useConfigStore } from '../../store/configStore'
 import { generateJsonc } from '../../lib/generate-jsonc'
 import { parseJsonc } from '../../lib/import-config'
-import { Menu } from 'lucide-react'
+import { Menu, Sparkles } from 'lucide-react'
 
 interface HeaderProps {
   onMenuToggle?: () => void
+  onWhatsNewClick?: () => void
+  hasNewVersion?: boolean
 }
 
-export default function Header({ onMenuToggle }: HeaderProps){
+export default function Header({ onMenuToggle, onWhatsNewClick, hasNewVersion }: HeaderProps){
   const fileInput = useRef<HTMLInputElement | null>(null)
   const config = useConfigStore((s) => s.config)
   const update = useConfigStore((s) => s.update)
@@ -70,6 +72,29 @@ export default function Header({ onMenuToggle }: HeaderProps){
         <span className="logo">OpenCode Config Builder</span>
       </div>
       <div className="header-actions">
+        <button
+          className="whatsnew-icon-btn"
+          onClick={onWhatsNewClick}
+          aria-label="What's New"
+          title="What's New"
+        >
+          <Sparkles size={16} />
+          {hasNewVersion && (
+            <span
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                top: 4,
+                right: 4,
+                width: 6,
+                height: 6,
+                borderRadius: '50%',
+                background: 'var(--error)',
+                boxShadow: '0 0 0 2px var(--bg-primary)',
+              }}
+            />
+          )}
+        </button>
         <Button variant="primary" size="sm" onClick={doImport}>Import</Button>
         <input ref={fileInput} type="file" accept=".jsonc,.json" onChange={onFileChosen} style={{display:'none'}} />
         <Button variant="secondary" size="sm" onClick={doExport}>Export</Button>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Sidebar from '../components/layout/Sidebar'
 import Header from '../components/layout/Header'
-import WhatsNewManager from '../components/ui/WhatsNew'
+import WhatsNewManager, { useWhatsNew } from '../components/ui/WhatsNew'
 import '../styles/globals.css'
 import { useConfigStore } from '../store/configStore'
 import { generateJsonc } from '../lib/generate-jsonc'
@@ -13,6 +13,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [previewCollapsed, setPreviewCollapsed] = useState(true)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
+  const [whatsNewOpen, setWhatsNewOpen] = useState(false)
+  const { hasNewVersion, dismiss: dismissWhatsNew } = useWhatsNew()
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const showToast = useCallback((msg: string) => {
@@ -68,7 +70,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="app-shell">
           <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
           <div className="main-column">
-            <Header onMenuToggle={() => setSidebarOpen(true)} />
+            <Header
+              onMenuToggle={() => setSidebarOpen(true)}
+              onWhatsNewClick={() => setWhatsNewOpen(true)}
+              hasNewVersion={hasNewVersion}
+            />
             <main className="content">{children}</main>
           </div>
         </div>
@@ -84,7 +90,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           <Code2 size={18} />
         </button>
-        <WhatsNewManager />
+        <WhatsNewManager
+          show={whatsNewOpen}
+          onClose={() => {
+            setWhatsNewOpen(false)
+            dismissWhatsNew()
+          }}
+        />
         <Toast message={toastMessage} />
       </body>
     </html>

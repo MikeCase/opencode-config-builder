@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { X, Sparkles } from 'lucide-react'
 
 const CURRENT_VERSION = '0.2.2'
+const STORAGE_KEY = 'opencode-config-version'
 
 const CHANGELOG: Record<string, { title: string; items: string[] }> = {
   '0.1.0': {
@@ -46,11 +47,52 @@ const CHANGELOG: Record<string, { title: string; items: string[] }> = {
   },
 }
 
-interface WhatsNewProps {
+export function useWhatsNew() {
+  const [hasNewVersion, setHasNewVersion] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (!stored) {
+      setHasNewVersion(true)
+      return
+    }
+    try {
+      const parsed = JSON.parse(stored)
+      if (parsed.version !== CURRENT_VERSION) {
+        setHasNewVersion(true)
+      } else if (parsed.dismissedAt) {
+        const elapsed = Date.now() - new Date(parsed.dismissedAt).getTime()
+        if (elapsed > 24 * 60 * 60 * 1000) {
+          setHasNewVersion(true)
+        }
+      }
+    } catch {
+      setHasNewVersion(true)
+    }
+  }, [])
+
+  const dismiss = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        version: CURRENT_VERSION,
+        dismissedAt: new Date().toISOString(),
+      }))
+    }
+    setHasNewVersion(false)
+  }
+
+  return { hasNewVersion, dismiss, currentVersion: CURRENT_VERSION }
+}
+
+interface WhatsNewManagerProps {
+  show: boolean
   onClose: () => void
 }
 
-function WhatsNew({ onClose }: WhatsNewProps) {
+export default function WhatsNewManager({ show, onClose }: WhatsNewManagerProps) {
+  if (!show) return null
+
   const changes = CHANGELOG[CURRENT_VERSION]
 
   return (
@@ -81,41 +123,4 @@ function WhatsNew({ onClose }: WhatsNewProps) {
       </div>
     </div>
   )
-}
-
-export default function WhatsNewManager() {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    const stored = localStorage.getItem('opencode-config-version')
-    if (!stored) {
-      setVisible(true)
-      return
-    }
-    try {
-      const parsed = JSON.parse(stored)
-      if (parsed.version !== CURRENT_VERSION) {
-        setVisible(true)
-      } else if (parsed.dismissedAt) {
-        const elapsed = Date.now() - new Date(parsed.dismissedAt).getTime()
-        if (elapsed > 24 * 60 * 60 * 1000) {
-          setVisible(true)
-        }
-      }
-    } catch {
-      setVisible(true)
-    }
-  }, [])
-
-  const handleDismiss = () => {
-    localStorage.setItem('opencode-config-version', JSON.stringify({
-      version: CURRENT_VERSION,
-      dismissedAt: new Date().toISOString(),
-    }))
-    setVisible(false)
-  }
-
-  if (!visible) return null
-
-  return <WhatsNew onClose={handleDismiss} />
 }

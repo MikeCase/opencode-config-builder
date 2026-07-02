@@ -107,3 +107,4 @@ Models under the `opencode/` namespace.
 | 8 | `claude-sonnet-4-6` | Zen | 806 |
 | 9 | `minimax-m2.5` | Zen | 771 |
 | 10 | `minimax-m2.5-free` | Zen | 650 |
+

@@ -87,6 +87,13 @@ function AgentCard({ name, agent, onUpdate, onDelete }: {
             placeholder="#ff6b6b or accent"
             description="UI accent color for this agent"
           />
+          <Input
+            label="Variant"
+            value={agent.variant ?? ''}
+            onChange={(v) => onUpdate(name, { ...agent, variant: v })}
+            placeholder="default, reasoning, fast..."
+            description="Default model variant for this agent"
+          />
           <div className="field-row">
             <Input
               label="Top P"
@@ -97,6 +104,18 @@ function AgentCard({ name, agent, onUpdate, onDelete }: {
               description="Nucleus sampling (0.0 - 1.0)"
             />
           </div>
+          <Input
+            label="Options"
+            value={typeof agent.options === 'object' ? JSON.stringify(agent.options, null, 2) : ''}
+            onChange={(v) => {
+              try {
+                onUpdate(name, { ...agent, options: v ? JSON.parse(v) : undefined })
+              } catch {}
+            }}
+            mono
+            placeholder='{"apiVersion": "2024-01-01"}'
+            description="Provider-specific options (JSON object)"
+          />
           <Input
             label="Prompt"
             value={typeof agent.prompt === 'string' ? agent.prompt : ''}
@@ -116,15 +135,15 @@ function AgentCard({ name, agent, onUpdate, onDelete }: {
                   <div key={key} style={{ display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'center' }}>
                     <div style={{ flex: 1 }}>
                       <Input label="" value={key} onChange={(v) => {
-                        const next = { ...agent.permission as Record<string, string> }
+                        const next: Record<string, string> = { ...(agent.permission as any) }
                         delete next[key]
                         next[v] = val as string
-                        onUpdate(name, { ...agent, permission: next })
+                        onUpdate(name, { ...agent, permission: next as any })
                       }} placeholder="tool or pattern" />
                     </div>
                     <div style={{ width: '140px' }}>
                       <Select label="" value={val as string} onChange={(v) => {
-                        onUpdate(name, { ...agent, permission: { ...agent.permission as Record<string, string>, [key]: v } })
+                        onUpdate(name, { ...agent, permission: { ...(agent.permission as any), [key]: v } })
                       }} options={[
                         { value: 'allow', label: 'Allow' },
                         { value: 'ask', label: 'Ask' },
@@ -132,9 +151,9 @@ function AgentCard({ name, agent, onUpdate, onDelete }: {
                       ]} />
                     </div>
                     <button onClick={() => {
-                      const next = { ...agent.permission as Record<string, string> }
-                      delete next[key]
-                      onUpdate(name, { ...agent, permission: Object.keys(next).length > 0 ? next : undefined })
+                        const next: Record<string, string> = { ...(agent.permission as any) }
+                        delete next[key]
+                        onUpdate(name, { ...agent, permission: Object.keys(next).length > 0 ? next as any : undefined })
                     }} className="expandable-card-delete" style={{ marginTop: '4px' }}>
                       <Trash2 size={14} />
                     </button>

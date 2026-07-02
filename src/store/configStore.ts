@@ -1,6 +1,36 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+// ─── Log Level ──────────────────────────────────────────────
+export type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR'
+
+// ─── References ─────────────────────────────────────────────
+export type ReferenceGit = {
+  repository: string
+  branch?: string
+  description?: string
+  hidden?: boolean
+}
+
+export type ReferenceLocal = {
+  path: string
+  description?: string
+  hidden?: boolean
+}
+
+export type ReferenceConfig = string | ReferenceGit | ReferenceLocal
+
+// ─── Skills ─────────────────────────────────────────────────
+export type SkillConfig = {
+  paths?: string[]
+  urls?: string[]
+}
+
+// ─── MCP ────────────────────────────────────────────────────
+export type MCPEnabledConfig = {
+  enabled: boolean
+}
+
 export type MCPServerConfig = {
   type?: 'local' | 'remote'
   command?: string[]
@@ -13,29 +43,44 @@ export type MCPServerConfig = {
   oauth?: object | false
 }
 
+// ─── Permissions ────────────────────────────────────────────
+export type PermissionAction = 'ask' | 'allow' | 'deny'
+
+export type PermissionRule = PermissionAction | Record<string, PermissionAction>
+
+export type PermissionConfig = PermissionAction | Record<string, PermissionRule>
+
+// ─── Agent ──────────────────────────────────────────────────
 export type AgentConfig = {
   description?: string
-  mode?: 'primary' | 'subagent' | 'all'
+  mode?: 'subagent' | 'primary' | 'all'
   model?: string
+  variant?: string
   prompt?: string
   temperature?: number
-  steps?: number
-  disable?: boolean
-  permission?: Record<string, any>
-  hidden?: boolean
-  tools?: Record<string, boolean>
-  color?: string
   top_p?: number
+  steps?: number
+  maxSteps?: number
+  disable?: boolean
+  hidden?: boolean
+  color?: string
+  tools?: Record<string, boolean>
+  permission?: PermissionConfig
+  options?: Record<string, any>
   [key: string]: any
 }
 
+// ─── Commands ───────────────────────────────────────────────
 export type CommandConfig = {
   template?: string
   description?: string
   agent?: string
   model?: string
+  variant?: string
+  subtask?: boolean
 }
 
+// ─── Formatters ─────────────────────────────────────────────
 export type FormatterConfig = {
   disabled?: boolean
   command?: string[]
@@ -43,44 +88,113 @@ export type FormatterConfig = {
   extensions?: string[]
 }
 
+// ─── LSP ────────────────────────────────────────────────────
+export type LspServerConfig = {
+  disabled?: boolean
+  command?: string[]
+  extensions?: string[]
+  env?: Record<string, string>
+  initialization?: Record<string, any>
+}
+
+export type LspConfig = boolean | Record<string, LspServerConfig>
+
+// ─── Compaction ─────────────────────────────────────────────
+export type CompactionConfig = {
+  auto?: boolean
+  prune?: boolean
+  tail_turns?: number
+  preserve_recent_tokens?: number
+  reserved?: number
+}
+
+// ─── Tool Output ────────────────────────────────────────────
+export type ToolOutputConfig = {
+  max_lines?: number
+  max_bytes?: number
+}
+
+// ─── Image / Attachment ─────────────────────────────────────
+export type ImageAttachmentConfig = {
+  auto_resize?: boolean
+  max_width?: number
+  max_height?: number
+  max_base64_bytes?: number
+}
+
+export type AttachmentConfig = {
+  image?: ImageAttachmentConfig
+}
+
+// ─── Enterprise ─────────────────────────────────────────────
+export type EnterpriseConfig = {
+  url: string
+}
+
+// ─── Experimental ───────────────────────────────────────────
+export type Policy = {
+  action: 'provider.use'
+  effect: 'allow' | 'deny'
+  resource: string
+}
+
+export type ExperimentalConfig = {
+  disable_paste_summary?: boolean
+  batch_tool?: boolean
+  openTelemetry?: boolean
+  primary_tools?: string[]
+  continue_loop_on_deny?: boolean
+  mcp_timeout?: number
+  policies?: Policy[]
+}
+
+// ─── Server ─────────────────────────────────────────────────
+export type ServerConfig = {
+  port?: number
+  hostname?: string
+  mdns?: boolean
+  mdnsDomain?: string
+  cors?: string[]
+}
+
+// ─── Main Config ────────────────────────────────────────────
 export type OpenCodeConfig = {
   $schema?: string
+  logLevel?: LogLevel
+  shell?: string
+  username?: string
   model?: string
-  provider?: Record<string, any>
   small_model?: string
+  default_agent?: string
   autoupdate?: boolean | 'notify'
   snapshot?: boolean
   share?: 'manual' | 'auto' | 'disabled'
-  server?: {
-    port?: number
-    hostname?: string
-    mdns?: boolean
-    mdnsDomain?: string
-    cors?: string[]
-  }
-  shell?: string
+  server?: ServerConfig
   tools?: Record<string, boolean>
+  provider?: Record<string, any>
   agent?: Record<string, AgentConfig>
-  default_agent?: string
   command?: Record<string, CommandConfig>
-  formatter?: Record<string, FormatterConfig>
-  permission?: Record<string, any>
-  compaction?: {
-    auto?: boolean
-    prune?: boolean
-    reserved?: number
-  }
+  formatter?: boolean | Record<string, FormatterConfig>
+  lsp?: LspConfig
+  permission?: PermissionConfig
+  mcp?: Record<string, MCPServerConfig | MCPEnabledConfig>
+  compaction?: CompactionConfig
   watcher?: {
     ignore?: string[]
   }
-  mcp?: Record<string, MCPServerConfig>
+  attachment?: AttachmentConfig
+  tool_output?: ToolOutputConfig
+  enterprise?: EnterpriseConfig
+  skills?: SkillConfig
+  references?: Record<string, ReferenceConfig>
   plugin?: string[]
   instructions?: string[]
   disabled_providers?: string[]
   enabled_providers?: string[]
-  experimental?: Record<string, any>
+  experimental?: ExperimentalConfig
 }
 
+// ─── Store ──────────────────────────────────────────────────
 type Store = {
   config: OpenCodeConfig
   setConfig: (c: OpenCodeConfig) => void
@@ -124,8 +238,6 @@ const defaultConfig: OpenCodeConfig = {
   formatter: {},
 }
 
-console.log('Store created, initial config:', JSON.stringify(defaultConfig).slice(0, 100))
-
 export const useConfigStore = create<Store>()(
   persist(
     (set) => ({
@@ -154,11 +266,9 @@ export const useConfigStore = create<Store>()(
         formatter: {},
       },
       setConfig: (c) => {
-        console.log('setConfig called with:', JSON.stringify(c).slice(0, 200))
         set({ config: c })
       },
       update: (path, value) => {
-        console.log('update called:', path, value)
         set((s)=>{ const next = JSON.parse(JSON.stringify(s.config)); mergePath(next, path, value); return { config: next } })
       },
       reset: () => set({ config: JSON.parse(JSON.stringify(defaultConfig)) }),

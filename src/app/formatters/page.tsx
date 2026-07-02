@@ -69,21 +69,21 @@ export default function FormattersPage() {
   const config = useConfigStore((s) => s.config)
   const update = useConfigStore((s) => s.update)
 
-  const formatters = config?.formatter ?? {}
+  const formatters: Record<string, any> = typeof config?.formatter === 'object' && config?.formatter !== null ? config?.formatter : {}
 
   const addFormatter = () => {
     const name = `formatter-${Object.keys(formatters).length + 1}`
-    update('formatter', { ...formatters, [name]: { command: [], extensions: [] } })
+    update('formatter', { ...formatters, [name]: { command: [], extensions: [] } } as any)
   }
 
   const updateFormatter = (name: string, formatter: FormatterConfig) => {
-    update('formatter', { ...formatters, [name]: formatter })
+    update('formatter', { ...formatters, [name]: formatter } as any)
   }
 
   const deleteFormatter = (name: string) => {
     const next = { ...formatters }
     delete next[name]
-    update('formatter', next)
+    update('formatter', next as any)
   }
 
   return (
@@ -118,6 +118,64 @@ export default function FormattersPage() {
         <button onClick={addFormatter} className="add-item-btn">
           <Plus size={16} />
           Add Formatter
+        </button>
+      </Card>
+
+      <Card title="LSP Servers" docUrl="https://opencode.ai/docs/config/#lsp">
+        <p className="card-description">
+          Configure Language Server Protocol servers for code intelligence.
+        </p>
+        <Toggle
+          label="Enable Built-in LSP"
+          description="Enable or disable all built-in LSP servers"
+          checked={config?.lsp === true || typeof config?.lsp === 'object'}
+          onChange={(v) => {
+            if (v && config?.lsp === false) update('lsp', true)
+            else if (!v) update('lsp', false)
+          }}
+        />
+        {typeof config?.lsp === 'object' && config?.lsp !== null && Object.keys(config.lsp).length > 0
+          ? Object.entries(config.lsp).map(([name, lspServer]: [string, any]) => (
+              <div key={name} className="expandable-card">
+                <div className="expandable-card-header" onClick={(e) => { const el = e.currentTarget.parentElement?.querySelector('.expandable-card-body'); if (el) el.classList.toggle('hidden') }}>
+                  <div className="expandable-card-header-left">
+                    <span className="expandable-card-header-title">{name}</span>
+                    {lspServer.disabled && <span className="expandable-card-header-badge expandable-card-header-badge-warning">disabled</span>}
+                  </div>
+                </div>
+                <div className="expandable-card-body" style={{ display: 'block' }}>
+                  <Input
+                    label="Command"
+                    value={lspServer.command?.join(' ') ?? ''}
+                    onChange={(v) => update('lsp', { ...(typeof config?.lsp === 'object' && config?.lsp ? config?.lsp : {}), [name]: { ...lspServer, command: v.split(' ').filter(Boolean) } } as any)}
+                    placeholder="typescript-language-server --stdio"
+                    description="Command and arguments to start the LSP server"
+                  />
+                  <ArrayField
+                    label="File Extensions"
+                    values={lspServer.extensions ?? []}
+                    onChange={(v) => update('lsp', { ...(typeof config?.lsp === 'object' && config?.lsp ? config?.lsp : {}), [name]: { ...lspServer, extensions: v } } as any)}
+                    placeholder=".ts,.tsx"
+                  />
+                  <Toggle
+                    label="Disabled"
+                    checked={lspServer.disabled ?? false}
+                    onChange={(v) => update('lsp', { ...(typeof config?.lsp === 'object' && config?.lsp ? config?.lsp : {}), [name]: { ...lspServer, disabled: v } } as any)}
+                  />
+                </div>
+              </div>
+            ))
+          : (
+            <div className="empty-state-inline">
+              <div className="empty-state-icon-wrap"><Code size={24} /></div>
+              No custom LSP servers configured.
+            </div>
+          )}
+        <button onClick={() => {
+          const name = `lsp-${Object.keys((typeof config?.lsp === 'object' && config?.lsp) || {}).length + 1}`
+          update('lsp', { ...(typeof config?.lsp === 'object' ? config?.lsp : {}), [name]: { command: [] } } as any)
+        }} className="add-item-btn">
+          <Plus size={16} /> Add LSP Server
         </button>
       </Card>
     </div>

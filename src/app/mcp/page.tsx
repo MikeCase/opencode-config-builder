@@ -221,6 +221,66 @@ export default function MCPPage() {
           Add MCP Server
         </button>
       </Card>
+
+      <Card title="Built-in MCP Servers" docUrl="https://opencode.ai/docs/mcp-servers/">
+        <p className="card-description">
+          Toggle built-in MCP servers on or off. These are servers that come bundled with OpenCode.
+        </p>
+        {(() => {
+          const builtInEntries = Object.entries(mcpServers).filter(([_, s]) => s && typeof s === 'object' && !('type' in s) && 'enabled' in s)
+          if (builtInEntries.length === 0) {
+            return (
+              <div className="empty-state-inline" style={{ marginBottom: '12px' }}>
+                <div className="empty-state-icon-wrap"><HardDrive size={24} /></div>
+                No built-in server toggles configured. Add one to enable or disable a built-in MCP server.
+              </div>
+            )
+          }
+          return builtInEntries.map(([name, server]: [string, any]) => (
+            <div key={name} style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
+              <div style={{ flex: 1 }}>
+                <Input
+                  label=""
+                  value={name}
+                  onChange={(v) => {
+                    const next = { ...mcpServers }
+                    delete next[name]
+                    next[v] = { enabled: server.enabled }
+                    update('mcp', next)
+                  }}
+                  placeholder="server-name"
+                />
+              </div>
+              <div style={{ minWidth: '100px' }}>
+                <Toggle
+                  label=""
+                  checked={server.enabled ?? true}
+                  onChange={(v) => update('mcp', { ...mcpServers, [name]: { enabled: v } })}
+                />
+              </div>
+              <button
+                onClick={() => {
+                  const next = { ...mcpServers }
+                  delete next[name]
+                  update('mcp', next)
+                }}
+                className="expandable-card-delete"
+                style={{ marginTop: '0' }}
+                aria-label="Remove"
+              >
+                <Trash2 size={14} />
+              </button>
+            </div>
+          ))
+        })()}
+        <button onClick={() => {
+          const existingBuiltin = Object.keys(mcpServers).filter(k => !mcpServers[k] || !('type' in (mcpServers[k] as any)))
+          const name = `builtin-${existingBuiltin.length + 1}`
+          update('mcp', { ...mcpServers, [name]: { enabled: true } })
+        }} className="add-item-btn">
+          <Plus size={16} /> Add Built-in Server Toggle
+        </button>
+      </Card>
     </div>
   )
 }

@@ -71,6 +71,24 @@ export default function GeneralPage() {
             { value: 'disabled', label: 'Disabled - Sharing is turned off' },
           ]}
         />
+        <Select
+          label="Log Level"
+          value={config?.logLevel ?? 'INFO'}
+          onChange={(v) => update('logLevel', v)}
+          options={[
+            { value: 'DEBUG', label: 'Debug - Verbose logging' },
+            { value: 'INFO', label: 'Info - Standard logging' },
+            { value: 'WARN', label: 'Warn - Warnings and errors only' },
+            { value: 'ERROR', label: 'Error - Errors only' },
+          ]}
+        />
+        <Input
+          label="Username"
+          value={config?.username ?? ''}
+          onChange={(v) => update('username', v)}
+          placeholder="Your display name"
+          description="Custom display name for conversations"
+        />
       </Card>
 
       <Card title="Shell" docUrl="https://opencode.ai/docs/config/#shell">
@@ -80,6 +98,17 @@ export default function GeneralPage() {
           onChange={(v) => update('shell', v)}
           placeholder="pwsh, bash, zsh..."
           description="Specify the shell to use for interactive terminal (default: auto-detect)"
+        />
+      </Card>
+
+      <Card title="Enterprise" docUrl="https://opencode.ai/docs/config/#enterprise">
+        <p className="card-description">Enterprise configuration for organizational deployments.</p>
+        <Input
+          label="Enterprise URL"
+          value={config?.enterprise?.url ?? ''}
+          onChange={(v) => update('enterprise', { url: v })}
+          placeholder="https://enterprise.acme.com"
+          description="Enterprise API endpoint URL"
         />
       </Card>
     </div>

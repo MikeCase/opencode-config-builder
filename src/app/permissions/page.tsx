@@ -105,21 +105,22 @@ export default function PermissionsPage() {
   const config = useConfigStore((s) => s.config)
   const update = useConfigStore((s) => s.update)
 
-  const permission = config?.permission ?? {}
+  const rawPerm = config?.permission
+  const permObj: Record<string, any> = typeof rawPerm === 'string' ? { '*': rawPerm } : { ...(rawPerm ?? {}) }
 
   const updatePermission = (tool: string, rules: PermissionRule[]) => {
     if (rules.length === 0) {
-      const next = { ...permission }
+      const next = { ...permObj }
       delete next[tool]
-      update('permission', next)
+      update('permission', next as any)
     } else {
       const ruleObj: Record<string, string> = {}
       rules.forEach(r => { ruleObj[r.pattern] = r.action })
-      update('permission', { ...permission, [tool]: ruleObj })
+      update('permission', { ...permObj, [tool]: ruleObj } as any)
     }
   }
 
-  const globalDefault = permission?.['*'] ?? 'allow'
+  const globalDefault = permObj?.['*'] ?? 'allow'
 
   return (
     <div>
@@ -132,7 +133,7 @@ export default function PermissionsPage() {
         <Select
           label="Default Permission"
           value={globalDefault}
-          onChange={(v) => update('permission', { ...permission, '*': v })}
+          onChange={(v) => update('permission', { ...permObj, '*': v } as any)}
           options={PERMISSION_OPTIONS}
           description="Applied to all tools that don't have specific rules"
         />
@@ -144,7 +145,7 @@ export default function PermissionsPage() {
         </p>
 
         {TOOL_PERMISSIONS.map((tool) => {
-          const toolPerm = permission?.[tool]
+          const toolPerm = permObj?.[tool]
           const rules: PermissionRule[] = toolPerm
             ? (typeof toolPerm === 'string'
                 ? [{ pattern: '*', action: toolPerm }]
@@ -168,14 +169,14 @@ export default function PermissionsPage() {
         </p>
         <ArrayField
           label="Allowed Directories"
-          values={(permission?.external_directory && typeof permission.external_directory === 'object')
-            ? Object.keys(permission.external_directory)
+          values={(permObj?.external_directory && typeof permObj.external_directory === 'object')
+            ? Object.keys(permObj.external_directory)
             : []
           }
           onChange={(dirs) => {
             const extDir: Record<string, string> = {}
             dirs.forEach(d => { extDir[d] = 'allow' })
-            update('permission', { ...permission, external_directory: extDir })
+            update('permission', { ...permObj, external_directory: extDir } as any)
           }}
           placeholder="~/projects/personal/**"
         />
